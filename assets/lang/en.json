@@ -1,0 +1,35 @@
+{
+    "title": "Meal Tracker",
+    "mealsOverviewDaily_appBarTitle": "Your Meals",
+
+
+    "OK": "OK",
+    "Cancel": "Cancel",
+    "Delete": "Delete",
+    "Add": "Add",
+    "Save": "Save",
+    "Edit": "Edit",
+    "Edit Text": "Edit Text",
+    "Type your message here...": "Type your message here...",
+    "Enter a value": "Enter a value",
+
+
+    "Invalid input": "Invalid input",
+    "Remember Me": "Remember Me",
+    "email": "E-mail address",
+    "Username": "Username",
+    "Password": "Password",
+    "Confirm Password": "Confirm Password",
+    "or login with": "or login with",
+    "or view Demo": "or view Demo",
+    "Demonstration": "Demonstration",
+    "Username is too short": "Username is too short",
+    "Password is too short": "Password is too short",
+    "LOGIN": "LOGIN",
+    "SIGNUP": "SIGNUP",
+    "languageTestColor": "#0000FF",
+    "Menu": "Menu",
+
+
+    "reset_locale": "Reset Language"
+}

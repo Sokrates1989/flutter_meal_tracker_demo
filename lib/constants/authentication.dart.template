@@ -1,0 +1,8 @@
+/// The API token used for authentication with the API.
+/// Replace 'YOUR_API_TOKEN_HERE' with the actual API token.
+const String kAuthentication_apiToken = 'YOUR_API_TOKEN_HERE';
+
+/// The pepper used for hashing/encryption purposes.
+/// This is combined with the user's password for extra security.
+/// Replace 'YOUR_PEPPER_VALUE_HERE' with the actual pepper value.
+const String kAuthentication_pepper = 'YOUR_PEPPER_VALUE_HERE';

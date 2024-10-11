@@ -1,0 +1,3 @@
+/// The base URL for the API.
+/// Replace 'https://your-api-url.com' with the actual API endpoint.
+const String kConfig_apiBaseUrl = 'https://your-api-url.com';

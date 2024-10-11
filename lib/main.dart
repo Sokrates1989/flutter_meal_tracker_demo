@@ -1,125 +1,128 @@
+// Public package imports.
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+// Custom package imports.
+import 'package:engaige_meal_tracker_demo/constants/colors.dart';
+import 'package:engaige_meal_tracker_demo/constants/themes.dart';
+import 'package:engaige_meal_tracker_demo/models/user.dart';
+import 'package:engaige_meal_tracker_demo/providers/data_provider.dart';
+import 'package:engaige_meal_tracker_demo/providers/navigation_provider.dart';
+import 'package:engaige_meal_tracker_demo/providers/ui_readiness_provider.dart';
+import 'package:engaige_meal_tracker_demo/screens/meals_overview_daily.dart';
+import 'package:engaige_meal_tracker_demo/screens/welcome_screen.dart';
+import 'package:engaige_meal_tracker_demo/utils/UI/ui_utils.dart';
+import 'package:engaige_meal_tracker_demo/utils/user_utils.dart';
+
+/// Entry point for the application.
+///
+/// This method initializes the app, sets up localization, retrieves the
+/// user's login state, and configures system UI settings.
+void main() async {
+  // Ensures that Flutter framework bindings are initialized before performing any actions.
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+
+  // Fetch the currently logged-in user, if any, from local storage (shared preferences).
+  User? user = await UserUtils().getLoggedInUser();
+
+  // Set system bar styles for enhanced UI appearance on Android.
+  UIUtils.makeSystemBarTransparent();
+
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [
+        Locale('en'), // English language support.
+        Locale('de'), // German language support.
+      ],
+      path: 'assets/lang', // Path to localization asset files.
+      child: MyApp(user: user), // Passes the logged-in user to the app.
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+/// Root widget for the application.
+///
+/// This widget configures the core features of the app, including state management,
+/// themes, localization, and routing. It decides whether to show the [WelcomeScreen]
+/// or the [MealsDailyOverviewScreen] based on the user's login status.
+class MyApp extends StatefulWidget {
+  /// The currently logged-in user, if any. Passed to this widget at initialization.
+  final User? user;
 
-  // This widget is the root of your application.
+  const MyApp({super.key, this.user});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
+    return MultiProvider(
+      /// A wrapper to provide multiple `ChangeNotifierProvider` instances in the app.
+      ///
+      /// This structure allows different parts of the app to access shared state objects
+      /// (such as [DataProvider], [NavigationProvider], and [UIReadinessProvider])
+      /// from a single point of initialization.
+      providers: [
+        // Manages all data-related operations for the app.
+        ChangeNotifierProvider(create: (context) => DataProvider()),
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+        // Handles navigation and routing within the app.
+        ChangeNotifierProvider(create: (context) => NavigationProvider(context)),
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+        // Tracks and monitors the readiness of UI components (e.g., ensures data is fully loaded).
+        ChangeNotifierProvider(create: (context) => UIReadinessProvider()),
+      ],
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+      child: MaterialApp(
+        /// The main configuration for the app, defining its themes, localization,
+        /// and routing structure using the `MaterialApp` widget, the core Flutter app widget.
+        theme: ThemeData(
+          primaryColor: kColors_primary, // Primary color for app elements such as buttons.
+          scaffoldBackgroundColor: Colors.white, // Default background color for the app screens.
 
-  final String title;
+          /// Defines the color scheme used throughout the app.
+          /// - [primary]: The main theme color for major UI elements like buttons and app bars.
+          /// - [secondary]: The accent color used for highlights or smaller UI elements.
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            primary: kColors_primary,
+            secondary: kColors_secondary,
+          ),
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+          // Configures the default styling for input fields (e.g., text boxes) across the app.
+          inputDecorationTheme: kThemes_mainTheme_inputDecorationTheme,
         ),
+
+        /// Delegates responsible for handling localization, such as loading the correct
+        /// language files and applying translations based on the user's locale.
+        localizationsDelegates: context.localizationDelegates,
+
+        /// Supported locales for the app. Each locale corresponds to a set of
+        /// localized strings stored in the `assets/lang` directory.
+        supportedLocales: context.supportedLocales,
+
+        /// The current locale of the app, derived from either the user's device settings
+        /// or their language preference in the app.
+        locale: context.locale,
+
+        /// Determines the initial screen to display based on the user's login state.
+        ///
+        /// - If the user is logged in, the [MealsDailyOverviewScreen] is shown.
+        /// - If no user is logged in, the [WelcomeScreen] is displayed.
+        home: widget.user == null
+            ? const WelcomeScreen() // Show welcome screen if no user is logged in.
+            : const MealsDailyOverviewScreen(), // Show meal overview if the user is logged in.
+
+        /// Defines the named routes for navigation within the app.
+        ///
+        /// This allows the app to navigate between screens by using route names.
+        routes: {
+          MealsDailyOverviewScreen.id: (context) => const MealsDailyOverviewScreen(),
+        },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

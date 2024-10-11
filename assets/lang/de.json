@@ -1,0 +1,35 @@
+{
+  "title": "Mahlzeiten Tracker",
+  "mealsOverviewDaily_appBarTitle": "Deine Mahlzeiten",
+
+
+  "OK": "OK",
+  "Cancel": "Abbrechen",
+  "Delete": "Löschen",
+  "Add": "Hinzufügen",
+  "Save": "Speichern",
+  "Edit": "Bearbeiten",
+  "Edit Text": "Text bearbeiten",
+  "Type your message here...": "Schreibe hier Deinen Text...",
+  "Enter a value": "Trage etwas ein",
+
+
+  "Invalid input": "Ungültige Eingabe",
+  "Remember Me": "Login merken",
+  "email": "E-Mail Adresse",
+  "Username": "Benutzername",
+  "Password": "Passwort",
+  "Confirm Password": "Passwort bestätigen",
+  "or login with": "oder einloggen via",
+  "or view Demo": "oder Demo ansehen",
+  "Demonstration": "Demonstration",
+  "Username is too short": "Benutzername ist zu kurz",
+  "Password is too short": "Passwort ist zu kurz",
+  "LOGIN": "EINLOGGEN",
+  "SIGNUP": "REGISTRIEREN",
+  "languageTestColor": "#FF0000",
+  "Menu": "Menü",
+
+
+  "reset_locale": "Sprache zurücksetzen"
+}
