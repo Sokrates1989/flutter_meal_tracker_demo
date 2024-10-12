@@ -142,12 +142,12 @@ class ApiMealRepo {
   /// required for the operation.
   ///
   /// Returns an [ApiReturn] containing the result of the operation.
-  Future<ApiReturn> addMeal(Meal meal) async {
+  Future<ApiReturn> addMeal({required Meal meal, required User user}) async {
     final String apiEndpointUrl = '$_baseUrl/v1/addMeal';
 
     // Constructing the request body with meal details and credentials.
     final mealItemMap = {
-      'credentials': _apiConnector.getAuthenticationItemMap(),
+      'credentials': _apiConnector.getCredentialsItemMap(userName: user.userName, hashedPassword: user.hashedPassword!),
       'year': meal.year,
       'month': meal.month,
       'day': meal.day,
@@ -172,6 +172,64 @@ class ApiMealRepo {
           success: true,
           returnCode: 200,
           explanation: 'Successfully added meal',
+        );
+      } else {
+        // Print and return the response in case of a non-200 status.
+        _apiConnector.printHttpResponse(response);
+        return ApiReturn(
+          success: false,
+          returnCode: response.statusCode,
+          explanation: '${response.reasonPhrase} ${response.body}',
+        );
+      }
+    } catch (e) {
+      // Handling any errors that occur during the request.
+      return ApiReturn(
+        success: false,
+        returnCode: 599,
+        explanation: e.toString(),
+      );
+    }
+  }
+
+
+  /// Edits an existing meal in the backend via the API.
+  ///
+  /// This method sends a POST request to update an existing meal in the database.
+  /// It constructs a request body containing the updated meal details and credentials
+  /// required for the operation.
+  ///
+  /// Returns an [ApiReturn] containing the result of the operation.
+  Future<ApiReturn> editMeal({required Meal meal, required User user}) async {
+    final String apiEndpointUrl = '$_baseUrl/v1/editMeal';
+
+    // Constructing the request body with updated meal details and credentials.
+    final mealItemMap = {
+      'credentials': _apiConnector.getCredentialsItemMap(userName: user.userName, hashedPassword: user.hashedPassword!),
+      'year': meal.year,
+      'month': meal.month,
+      'day': meal.day,
+      'mealType': meal.mealType,
+      'fat_level': meal.fatLevel,
+      'sugar_level': meal.sugarLevel,
+    };
+
+    final body = json.encode(mealItemMap);
+
+    try {
+      // Sending the POST request to edit the meal.
+      final response = await http.post(
+        Uri.parse(apiEndpointUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+
+      // Handling successful response with status code 200.
+      if (response.statusCode == 200) {
+        return ApiReturn(
+          success: true,
+          returnCode: 200,
+          explanation: 'Successfully edited meal',
         );
       } else {
         // Print and return the response in case of a non-200 status.

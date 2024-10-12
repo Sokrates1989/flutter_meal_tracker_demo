@@ -205,17 +205,61 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
   }
 
 
+  void _saveChanges() async {
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
+    final mealRepo = dataProvider.dataHandler.getMealRepo();
 
-  void _saveChanges() {
+    // Lists to store meals that need to be added or edited
+    List<Meal> mealsToAdd = [];
+    List<Meal> mealsToEdit = [];
 
-    // Edit / Add Meals to db.
+    // Compare mealsOfDay with initialMealsOfDay
+    for (Meal meal in mealsOfDay!) {
+      final correspondingInitialMeal = initialMealsOfDay!.firstWhere(
+            (initialMeal) => initialMeal.mealType == meal.mealType,
+        orElse: () => Meal(
+          year: meal.year,
+          month: meal.month,
+          day: meal.day,
+          mealType: "",
+          fatLevel: -1,
+          sugarLevel: -1,
+        ),
+      );
 
+      // If the meal is not found in initialMealsOfDay, it needs to be added
+      if (correspondingInitialMeal.mealType == "") {
+        mealsToAdd.add(meal);
+      } else if (meal.toJson() != correspondingInitialMeal.toJson()) {
+        // If the meal exists but its data has changed, it needs to be edited
+        mealsToEdit.add(meal);
+      }
+    }
 
+    // Handle adding new meals
+    for (Meal newMeal in mealsToAdd) {
+      bool success = await mealRepo.addMeal(meal: newMeal, user: user);
+      if (!success) {
+        // Handle failure to add meal (e.g., show an error message)
+        print("Failed to add meal: ${newMeal.mealType}");
+      }
+    }
+
+    // Handle editing existing meals
+    for (Meal updatedMeal in mealsToEdit) {
+      bool success = await mealRepo.editMeal(meal: updatedMeal, user: user);
+      if (!success) {
+        // Handle failure to edit meal (e.g., show an error message)
+        print("Failed to edit meal: ${updatedMeal.mealType}");
+      }
+    }
+
+    // Update the initialMealsOfDay to reflect the current state
     setState(() {
-      // Save changes logic - update the initialMealsOfDay to reflect the current state
       initialMealsOfDay = List.from(mealsOfDay!.map((meal) => Meal.fromMap(meal.toMap())));
     });
   }
+
 
   void _cancelChanges() {
     setState(() {

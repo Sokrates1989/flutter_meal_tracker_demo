@@ -73,8 +73,20 @@ class DataHandlerMealRepo {
   /// - [meal]: The `Meal` object containing the meal details to be added.
   ///
   /// Returns a `Future<bool>` indicating whether the meal was successfully added.
-  Future<bool> addMeal(Meal meal) async {
-    final ApiReturn apiResponse = await _apiConnector.getMealRepo().addMeal(meal);
+  Future<bool> addMeal({required Meal meal, required User user}) async {
+    final ApiReturn apiResponse = await _apiConnector.getMealRepo().addMeal(meal: meal, user: user);
+
+    // Return the success status of the API call.
+    return apiResponse.success;
+  }
+
+
+  /// Edits an existing meal in the database via the API.
+  ///
+  /// This method sends an updated `Meal` object to the API to be edited in the database.
+  /// It returns `true` if the operation was successful, otherwise `false`.
+  Future<bool> editMeal({required Meal meal, required User user}) async {
+    final ApiReturn apiResponse = await _apiConnector.getMealRepo().editMeal(meal: meal, user: user);
 
     // Return the success status of the API call.
     return apiResponse.success;
