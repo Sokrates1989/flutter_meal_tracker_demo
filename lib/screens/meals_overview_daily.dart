@@ -43,6 +43,7 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
 
   /// The list of meals the user tracked.
   late List<Meal>? mealsOfDay;
+  late List<Meal>? initialMealsOfDay; // To store the initial state
 
   /// Scroll controller to manage scrolling within the screen.
   final ScrollController scrollController = ScrollController();
@@ -104,32 +105,30 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
 
   /// Builds the main body of the screen.
   Widget _buildAppBody() {
-    // Get current screen width for responsive UI.
     double screenWidth = MediaQuery.of(context).size.width;
 
-    // Display a message if no meal types are available.
     if (mealTypes == null || mealTypes!.isEmpty) {
       return const Center(
         child: Text('No meal types available'),
       );
     }
 
-    // Return a scrollable list of meal types.
-    return Column(
-      children: [
-        const SizedBox(height: 35), // Add spacer at the top.
-        Expanded(
-          child: ListView.builder(
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 35), // Spacer at the top
+          ListView.builder(
+            shrinkWrap: true, // Ensures ListView takes up only the necessary space
+            physics: NeverScrollableScrollPhysics(), // Disables internal scrolling
             itemCount: mealTypes!.length,
             itemBuilder: (context, index) {
               String mealType = mealTypes![index];
               return MealTypeItem(
                 mealType: mealType,
-                meal: getCorrespondingMeal(
-                    mealsOfDay: mealsOfDay, mealType: mealType),
+                meal: getCorrespondingMeal(mealsOfDay: mealsOfDay, mealType: mealType),
                 currentScreenWidth: screenWidth,
                 onEditMeal: () {
-                  // Call the dialog with predefined values (edit mode)
                   _showAddEditMealDialog(
                     context: context,
                     mealType: mealType,
@@ -148,10 +147,84 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
               );
             },
           ),
-        ),
-      ],
+          const SizedBox(height: 20), // Add spacing between the list and the buttons
+          if (haveMealsChanged()) _buildSaveCancelButtons(), // Conditionally show buttons
+        ],
+      ),
     );
   }
+
+
+  Widget _buildSaveCancelButtons() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          // Save Button (ElevatedButton with rounded corners and specific color)
+          ElevatedButton(
+            onPressed: _saveChanges, // Define your save logic here
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red, // Button background color
+              minimumSize: const Size(200, 45), // Set a specific size
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25.0), // Rounded corners
+              ),
+            ),
+            child: Text(
+              tr('Save'),
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.white, // White text color
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          // Cancel Button (OutlinedButton with rounded corners)
+          OutlinedButton(
+            onPressed: _cancelChanges, // Define your cancel logic here
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.red, // Text and border color
+              side: const BorderSide(color: Colors.red), // Red border
+              minimumSize: const Size(200, 45), // Set a specific size
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25.0), // Rounded corners
+              ),
+            ),
+            child: Text(
+              tr('Cancel'),
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black, // Black text color
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
+  void _saveChanges() {
+
+    // Edit / Add Meals to db.
+
+
+    setState(() {
+      // Save changes logic - update the initialMealsOfDay to reflect the current state
+      initialMealsOfDay = List.from(mealsOfDay!.map((meal) => Meal.fromMap(meal.toMap())));
+    });
+  }
+
+  void _cancelChanges() {
+    setState(() {
+      // Cancel changes logic - revert mealsOfDay to the initial state
+      mealsOfDay = List.from(initialMealsOfDay!.map((meal) => Meal.fromMap(meal.toMap())));
+    });
+  }
+
+
 
   /// Fetches the necessary data to populate the screen.
   ///
@@ -178,6 +251,10 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
     mealsOfDay =
         await dataProvider.dataHandler.getMealRepo().getMeals(user: user);
 
+    // Store a deep copy of mealsOfDay in initialMealsOfDay
+    initialMealsOfDay = List.from(mealsOfDay!.map((meal) => Meal.fromMap(meal.toMap())));
+
+
     // Indicate that the screen values are fully loaded.
     uiReadinessProvider.isMealsOverViewDailyScreenReady = true;
   }
@@ -191,6 +268,23 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
       showScrollToTopBtn = scrollController.offset > showOffset;
     });
   }
+
+
+  bool haveMealsChanged() {
+    if (mealsOfDay == null || initialMealsOfDay == null) return false;
+
+    if (mealsOfDay!.length != initialMealsOfDay!.length) return true;
+
+    for (int i = 0; i < mealsOfDay!.length; i++) {
+      if (mealsOfDay![i].toJson() != initialMealsOfDay![i].toJson()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+
 
   Meal? getCorrespondingMeal(
       {required String mealType, required List<Meal>? mealsOfDay}) {

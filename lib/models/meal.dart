@@ -62,8 +62,8 @@ class Meal {
       'month': month,
       'day': day,
       'mealType': mealType,
-      'fatLevel': fatLevel,
-      'sugarLevel': sugarLevel,
+      'fat_level': fatLevel,
+      'sugar_level': sugarLevel,
     };
   }
 
