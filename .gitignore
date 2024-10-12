@@ -91,3 +91,6 @@ web/manifest.json
 
 # Test Related
 test
+
+# Devtools.
+devtools_options.yaml
