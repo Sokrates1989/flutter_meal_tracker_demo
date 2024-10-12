@@ -1,6 +1,7 @@
 {
   "title": "Mahlzeiten Tracker",
-  "mealsOverviewDaily_appBarTitle": "Deine Mahlzeiten",
+  "mealsOverviewDaily_appBarTitle": "Heutige Mahlzeiten",
+  "mealsOverviewDaily_appBarBackNavigationText": "Ernährung",
 
 
   "OK": "OK",

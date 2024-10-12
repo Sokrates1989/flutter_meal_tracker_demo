@@ -1,6 +1,7 @@
 {
     "title": "Meal Tracker",
-    "mealsOverviewDaily_appBarTitle": "Your Meals",
+    "mealsOverviewDaily_appBarTitle": "Today's meals",
+    "mealsOverviewDaily_appBarBackNavigationText": "Nutrition",
 
 
     "OK": "OK",
