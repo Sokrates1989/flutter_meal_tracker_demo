@@ -10,12 +10,14 @@
 
 
     "sugarLevel_heading" : "Sugar",
+    "sugarLevel_dialogHeading" : "Sugar content",
     "sugarLevel_0": "Low",
     "sugarLevel_1": "Medium",
     "sugarLevel_2": "High",
     "sugarLevel_unknown": "Unknown",
 
     "fatLevel_heading" : "Fat",
+    "fatLevel_dialogHeading" : "Fat content",
     "fatLevel_0": "Low",
     "fatLevel_1": "Medium",
     "fatLevel_2": "High",

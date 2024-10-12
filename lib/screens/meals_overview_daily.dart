@@ -1,4 +1,5 @@
 // Public package imports.
+import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart' hide NavigationMode;
 
@@ -128,10 +129,21 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
                     mealsOfDay: mealsOfDay, mealType: mealType),
                 currentScreenWidth: screenWidth,
                 onEditMeal: () {
-                  print("Edit Meal Button clicked");
+                  // Call the dialog with predefined values (edit mode)
+                  _showAddEditMealDialog(
+                    context: context,
+                    mealType: mealType,
+                    isEdit: true,
+                    meal: getCorrespondingMeal(mealsOfDay: mealsOfDay, mealType: mealType),
+                  );
                 },
                 onAddMeal: () {
-                  print("Add Meal Button clicked");
+                  _showAddEditMealDialog(
+                    context: context,
+                    mealType: mealType,
+                    isEdit: false,
+                    meal: null,
+                  );
                 },
               );
             },
@@ -198,6 +210,194 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
     // If no matching meal is found, return null
     return null;
   }
+
+  void _showAddEditMealDialog({
+    required BuildContext context,
+    required String mealType,
+    required bool isEdit,
+    Meal? meal,
+  }) {
+    // Pre-select values if in edit mode
+    int selectedFatLevel = meal?.fatLevel ?? 1; // Default to 1
+    int selectedSugarLevel = meal?.sugarLevel ?? 1; // Default to 1
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setDialogState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              contentPadding: EdgeInsets.zero,
+              content: Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tr("mealType_$mealType"),
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 20.0),
+                    Text(tr("fatLevel_dialogHeading")),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildSelectionButton(
+                          context: context,
+                          label: tr('fatLevel_0'),
+                          isSelected: selectedFatLevel == 0,
+                          onTap: () {
+                            setDialogState(() {
+                              selectedFatLevel = 0;
+                            });
+                          },
+                        ),
+                        _buildSelectionButton(
+                          context: context,
+                          label: tr('fatLevel_1'),
+                          isSelected: selectedFatLevel == 1,
+                          onTap: () {
+                            setDialogState(() {
+                              selectedFatLevel = 1;
+                            });
+                          },
+                        ),
+                        _buildSelectionButton(
+                          context: context,
+                          label: tr('fatLevel_2'),
+                          isSelected: selectedFatLevel == 2,
+                          onTap: () {
+                            setDialogState(() {
+                              selectedFatLevel = 2;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20.0),
+                    Text(tr("sugarLevel_dialogHeading")),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildSelectionButton(
+                          context: context,
+                          label: tr('sugarLevel_0'),
+                          isSelected: selectedSugarLevel == 0,
+                          onTap: () {
+                            setDialogState(() {
+                              selectedSugarLevel = 0;
+                            });
+                          },
+                        ),
+                        _buildSelectionButton(
+                          context: context,
+                          label: tr('sugarLevel_1'),
+                          isSelected: selectedSugarLevel == 1,
+                          onTap: () {
+                            setDialogState(() {
+                              selectedSugarLevel = 1;
+                            });
+                          },
+                        ),
+                        _buildSelectionButton(
+                          context: context,
+                          label: tr('sugarLevel_2'),
+                          isSelected: selectedSugarLevel == 2,
+                          onTap: () {
+                            setDialogState(() {
+                              selectedSugarLevel = 2;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.cancel, color: Colors.red),
+                          onPressed: () {
+                            Navigator.pop(context); // Close the dialog
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.check, color: Colors.green),
+                          onPressed: () {
+
+                            // Create a new Meal object with the selected values
+                            Meal newMeal = Meal(
+                              year: DateTime.now().year,
+                              month: DateTime.now().month,
+                              day: DateTime.now().day,
+                              mealType: mealType,
+                              fatLevel: selectedFatLevel,
+                              sugarLevel: selectedSugarLevel,
+                            );
+
+                            setState(() {
+                              if (isEdit) {
+                                // Find and replace the existing meal in mealsOfDay
+                                int index = mealsOfDay!.indexWhere((meal) => meal.mealType == mealType);
+                                if (index != -1) {
+                                  mealsOfDay![index] = newMeal;
+                                }
+                              } else {
+                                // Add the new meal to mealsOfDay
+                                mealsOfDay!.add(newMeal);
+                              }
+                            });
+
+                            // Close the dialog.
+                            Navigator.pop(context); // Close the dialog
+                          },
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildSelectionButton({
+    required BuildContext context,
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.red : Colors.transparent,
+          border: Border.all(
+            color: isSelected ? Colors.red : Colors.black,
+          ),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : Colors.black,
+          ),
+        ),
+      ),
+    );
+  }
+
 
   @override
   void dispose() {
