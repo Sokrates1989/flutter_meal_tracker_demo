@@ -119,7 +119,6 @@ class AuthService {
           .registerUser(
         hashedPassword: hashedPassword,
         userName: signupData.name!,
-        isTelegramLogin: false,
       );
 
       // If registration is successful

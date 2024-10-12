@@ -1,32 +1,59 @@
+// Public package imports.
 import 'dart:convert';
 
+// Custom package imports.
 import 'package:engaige_meal_tracker_demo/utils/encryption_utils.dart';
 
+/// Represents a User in the meal tracker application.
+///
+/// Contains information such as the user's ID, username, and optionally
+/// the hashed password.
 class User {
-  // Class vars.
+  /// The unique IDentifier for the user.
+  ///
+  /// A value of `0` indicates the user is not yet created or will be created.
   late int ID;
+
+  /// The username of the user.
   final String userName;
+
+  /// The hashed password of the user, optional.
   String? hashedPassword;
 
-  // ID = 0 not yet created/ to be created.
+  /// Constructs a [User] instance.
+  ///
+  /// The [userName] is required, while the [ID] and [hashedPassword] are optional.
+  /// If the [ID] is not provided, it defaults to `0`.
   User({
-    ID,
+    int? ID,
     required this.userName,
     this.hashedPassword,
   }) {
     this.ID = ID ?? 0;
   }
 
+  /// Returns a demo user with preset credentials for demo login.
+  ///
+  /// The demo user's username is `DemoUser123` and their password is hashed.
   static User getDemoUser() {
-    String userName = 'DemoUser123';
-    String password = '123';
+    const String demoUserName = 'DemoUser123';
+    const String demoPassword = '123';
+
     EncryptionUtils encryptionUtils = EncryptionUtils();
     String hashedPassword = encryptionUtils.hashUserPassword(
-        userName: userName, passwordToHash: password);
+      userName: demoUserName,
+      passwordToHash: demoPassword,
+    );
+
     return User(
-        userName: userName, hashedPassword: hashedPassword);
+      userName: demoUserName,
+      hashedPassword: hashedPassword,
+    );
   }
 
+  /// Constructs a [User] instance from a [Map].
+  ///
+  /// Expects the map to contain keys for 'ID', 'name', and 'hashedPassword'.
   static User fromMap(Map map) {
     return User(
       ID: map['ID'],
@@ -35,17 +62,22 @@ class User {
     );
   }
 
-  static bool getBooleanFromMapValue(value) {
+  /// Utility function to interpret various representations of boolean values.
+  ///
+  /// Returns `true` if the value is `1`, `"True"`, `"true"`, or `true`, otherwise returns `false`.
+  static bool getBooleanFromMapValue(dynamic value) {
     return value == 1 || value == "True" || value == "true" || value == true;
   }
 
+  /// Converts the [User] instance into a [Map].
+  ///
+  /// This is useful for serialization purposes.
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = {
+    final map = <String, dynamic>{
       'ID': ID,
       'userName': userName,
     };
 
-    // Optional parameters.
     if (hashedPassword != null) {
       map['hashedPassword'] = hashedPassword;
     }
@@ -53,14 +85,17 @@ class User {
     return map;
   }
 
-  /// Convert object to json (using its map conversion).
+  /// Converts the [User] instance into a JSON string.
+  ///
+  /// This method uses [toMap] internally for the conversion.
   String toJson() {
-    return json.encode(toMap());
+    return jsonEncode(toMap());
   }
 
-  /// Convert json to object.
-  static User fromJson(String json) {
-    return fromMap(jsonDecode(json));
+  /// Constructs a [User] instance from a JSON string.
+  ///
+  /// This method decodes the JSON and passes it to [fromMap].
+  static User fromJson(String jsonString) {
+    return fromMap(jsonDecode(jsonString));
   }
-
 }

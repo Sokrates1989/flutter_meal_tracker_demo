@@ -1,6 +1,8 @@
 import 'package:engaige_meal_tracker_demo/storage/api_connector.dart';
 import 'package:engaige_meal_tracker_demo/storage/database_wrapper.dart';
 import 'package:engaige_meal_tracker_demo/storage/data_handler_repo/data_handler_user_repo.dart';
+import 'package:engaige_meal_tracker_demo/storage/data_handler_repo/data_handler_meal_repo.dart';
+
 
 /// The `DataHandler` class serves as the main entry point for managing
 /// user data interactions with both the API and local database.
@@ -31,5 +33,15 @@ class DataHandler {
   /// Returns an instance of `DataHandlerUserRepo`.
   DataHandlerUserRepo getUserRepo() {
     return DataHandlerUserRepo(_apiConnector, _databaseWrapper);
+  }
+
+
+  /// Provides an instance of [DataHandlerMealRepo] for managing meal-related
+  /// data operations through the API.
+  ///
+  /// Returns an instance of [DataHandlerMealRepo] that allows access to
+  /// meal-specific repository operations.
+  DataHandlerMealRepo getMealRepo() {
+    return DataHandlerMealRepo(_apiConnector);
   }
 }

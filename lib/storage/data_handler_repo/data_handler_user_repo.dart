@@ -14,44 +14,41 @@ class DataHandlerUserRepo {
   /// Database wrapper for handling local database operations.
   final DatabaseWrapper _databaseWrapper;
 
-  /// Constructor for `DataHandlerUserRepo`.
+  /// Constructs an instance of `DataHandlerUserRepo`.
   ///
-  /// - [_apiConnector]: The `ApiConnector` to handle API calls.
-  /// - [_databaseWrapper]: The `DatabaseWrapper` to interact with the local database.
+  /// Accepts an [ApiConnector] for handling API interactions and a [DatabaseWrapper]
+  /// for managing local database operations.
   DataHandlerUserRepo(this._apiConnector, this._databaseWrapper);
 
   /// Registers a new user using the API.
   ///
   /// This method sends a registration request to the API with the user's login
-  /// identifier and hashed password.
+  /// identifier (e.g., username or email) and hashed password.
   ///
-  /// - [userName]: The user's login identifier (e.g., username or email).
+  /// - [userName]: The user's login identifier.
   /// - [hashedPassword]: The user's hashed password.
-  /// - [isTelegramLogin]: A flag to indicate if the user is registering via Telegram.
   ///
-  /// Returns an `ApiReturn` object containing the response from the API.
+  /// Returns an [ApiReturn] object containing the response from the API.
   Future<ApiReturn> registerUser({
     required String userName,
     required String hashedPassword,
-    required bool isTelegramLogin,
   }) async {
     ApiReturn apiResponse = await _apiConnector.getUserRepo().registerUser(
       userName: userName,
       hashedPassword: hashedPassword,
-      isTelegramLogin: isTelegramLogin,
     );
     return apiResponse;
   }
 
   /// Logs in a user using the API.
   ///
-  /// This method sends a login request to the API with the user's login identifier
-  /// and hashed password.
+  /// This method sends a login request to the API using the user's login identifier
+  /// (e.g., username or email) and hashed password.
   ///
-  /// - [userName]: The user's login identifier (e.g., username or email).
+  /// - [userName]: The user's login identifier.
   /// - [hashedPassword]: The user's hashed password.
   ///
-  /// Returns an `ApiReturn` object containing the response from the API.
+  /// Returns an [ApiReturn] object containing the response from the API.
   Future<ApiReturn> login({
     required String userName,
     required String hashedPassword,
@@ -63,15 +60,15 @@ class DataHandlerUserRepo {
     return apiResponse;
   }
 
-  /// Logs in a user and retrieves the user data if successful.
+  /// Logs in a user and retrieves their user data if the login is successful.
   ///
-  /// This method sends a login request to the API and returns the `User` object
-  /// if the login is successful. If not, it returns `null`.
+  /// This method sends a login request to the API and returns a `User` object
+  /// if the login is successful. If the login fails, it returns `null`.
   ///
-  /// - [userName]: The user's login identifier (e.g., username or email).
+  /// - [userName]: The user's login identifier.
   /// - [hashedPassword]: The user's hashed password.
   ///
-  /// Returns a `User` object if the login is successful, or `null` otherwise.
+  /// Returns a `User` object if the login is successful, or `null` if it fails.
   Future<User?> getUser({
     required String userName,
     required String hashedPassword,
@@ -90,11 +87,11 @@ class DataHandlerUserRepo {
   /// Retrieves a `User` object, including the user's ID, based on the provided `User` object.
   ///
   /// This method logs in the user using their existing information (e.g., username and password)
-  /// and retrieves the full `User` object, including the user's ID.
+  /// and retrieves the full `User` object, including their ID.
   ///
-  /// - [user]: The `User` object to retrieve the ID for.
+  /// - [user]: The `User` object for which to retrieve the ID.
   ///
-  /// Returns the updated `User` object with the ID.
+  /// Returns the updated `User` object with the ID if successful.
   ///
   /// Throws an exception if the login fails or the user data cannot be retrieved.
   Future<User> getUserWithID({required User user}) async {

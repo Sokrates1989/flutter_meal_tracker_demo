@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:engaige_meal_tracker_demo/constants/authentication.dart';
 import 'package:engaige_meal_tracker_demo/models/user.dart';
 import 'package:engaige_meal_tracker_demo/storage/api_repo/api_user_repo.dart';
+import 'package:engaige_meal_tracker_demo/storage/api_repo/api_meal_repo.dart';
 
 /// The `ApiConnector` class is responsible for managing interactions
 /// with external APIs, such as user authentication, credentials management,
@@ -24,6 +25,18 @@ class ApiConnector {
   ApiUserRepo getUserRepo() {
     return ApiUserRepo(this);
   }
+
+
+  /// Provides an instance of `ApiMealRepo` for meal-related API operations.
+  ///
+  /// This method returns a repository that contains meal-specific API
+  /// functions, such as fetching, adding, or updating meal data.
+  ///
+  /// Returns an instance of `ApiMealRepo`.
+  ApiMealRepo getMealRepo() {
+    return ApiMealRepo(this);
+  }
+
 
   /// Returns a map containing the authentication token required for API calls.
   ///
