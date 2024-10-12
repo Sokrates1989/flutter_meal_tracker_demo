@@ -1,8 +1,12 @@
+// Public package imports.
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+
+// Own package imports.
 import 'package:engaige_meal_tracker_demo/constants/config.dart';
 import 'package:engaige_meal_tracker_demo/storage/api_connector.dart';
 import 'package:engaige_meal_tracker_demo/models/meal.dart';
+import 'package:engaige_meal_tracker_demo/models/user.dart';
 
 /// The `ApiMealRepo` class handles meal-related API operations.
 ///
@@ -25,38 +29,49 @@ class ApiMealRepo {
   /// explanation, and the meal types (if successful).
   ///
   /// Returns an [ApiReturn] containing the result of the operation.
-  Future<ApiReturn> getMealTypes() async {
-    String apiEndpointUrl = '$_baseUrl/v1/getMealTypes';
+  Future<ApiReturn> getMealTypes(User user) async {
+    final String apiEndpointUrl = '$_baseUrl/v1/getMealTypes';
 
-    http.Response response;
+    // Construct the request body with credentials.
+    final body = json.encode(
+      _apiConnector.getCredentialsItemMap(
+        userName: user.userName,
+        hashedPassword: user.hashedPassword!,
+      ),
+    );
+
     try {
-      // Sending the GET request to fetch meal types.
-      response = await http.get(Uri.parse(apiEndpointUrl));
+      // Sending the POST request to fetch meal types.
+      final response = await http.post(
+        Uri.parse(apiEndpointUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+
+      // Handling successful response with status code 200.
+      if (response.statusCode == 200) {
+        final mealTypes = jsonDecode(response.body)['mealTypes'];
+        return ApiReturn(
+          success: true,
+          returnCode: 200,
+          explanation: 'Successfully fetched meal types',
+          data: mealTypes,
+        );
+      } else {
+        // Print and return the response in case of a non-200 status.
+        _apiConnector.printHttpResponse(response);
+        return ApiReturn(
+          success: false,
+          returnCode: response.statusCode,
+          explanation: '${response.reasonPhrase} ${response.body}',
+        );
+      }
     } catch (e) {
       // Handling any errors that occur during the request.
       return ApiReturn(
         success: false,
         returnCode: 599,
         explanation: e.toString(),
-      );
-    }
-
-    // Handling successful response with status code 200.
-    if (response.statusCode == 200) {
-      var mealTypes = jsonDecode(response.body)['mealTypes'];
-      return ApiReturn(
-        success: true,
-        returnCode: 200,
-        explanation: 'Successfully fetched meal types',
-        data: mealTypes,
-      );
-    } else {
-      // Print and return the response in case of a non-200 status.
-      _apiConnector.printHttpResponse(response);
-      return ApiReturn(
-        success: false,
-        returnCode: response.statusCode,
-        explanation: '${response.reasonPhrase} ${response.body}',
       );
     }
   }
@@ -69,51 +84,51 @@ class ApiMealRepo {
   ///
   /// Returns an [ApiReturn] containing the result of the operation.
   Future<ApiReturn> addMeal(Meal meal) async {
-    String apiEndpointUrl = '$_baseUrl/v1/addMeal';
+    final String apiEndpointUrl = '$_baseUrl/v1/addMeal';
 
     // Constructing the request body with meal details and credentials.
-    Map mealItemMap = {
+    final mealItemMap = {
       'credentials': _apiConnector.getAuthenticationItemMap(),
       'year': meal.year,
       'month': meal.month,
       'day': meal.day,
       'mealType': meal.mealType,
       'fat_level': meal.fatLevel,
-      'sugar_level': meal.sugarLevel
+      'sugar_level': meal.sugarLevel,
     };
-    var body = json.encode(mealItemMap);
 
-    http.Response response;
+    final body = json.encode(mealItemMap);
+
     try {
       // Sending the POST request to add a meal.
-      response = await http.post(
+      final response = await http.post(
         Uri.parse(apiEndpointUrl),
         headers: {'Content-Type': 'application/json'},
         body: body,
       );
+
+      // Handling successful response with status code 200.
+      if (response.statusCode == 200) {
+        return ApiReturn(
+          success: true,
+          returnCode: 200,
+          explanation: 'Successfully added meal',
+        );
+      } else {
+        // Print and return the response in case of a non-200 status.
+        _apiConnector.printHttpResponse(response);
+        return ApiReturn(
+          success: false,
+          returnCode: response.statusCode,
+          explanation: '${response.reasonPhrase} ${response.body}',
+        );
+      }
     } catch (e) {
       // Handling any errors that occur during the request.
       return ApiReturn(
         success: false,
         returnCode: 599,
         explanation: e.toString(),
-      );
-    }
-
-    // Handling successful response with status code 200.
-    if (response.statusCode == 200) {
-      return ApiReturn(
-        success: true,
-        returnCode: 200,
-        explanation: 'Successfully added meal',
-      );
-    } else {
-      // Print and return the response in case of a non-200 status.
-      _apiConnector.printHttpResponse(response);
-      return ApiReturn(
-        success: false,
-        returnCode: response.statusCode,
-        explanation: '${response.reasonPhrase} ${response.body}',
       );
     }
   }

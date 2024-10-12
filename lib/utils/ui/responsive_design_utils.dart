@@ -1,9 +1,13 @@
-import 'package:engaige_meal_tracker_demo/models/sizes/widget_size_values.dart';
+// Public package imports.
 import 'package:flutter/material.dart' hide NavigationMode;
+
+// Custom package imports.
+import 'package:engaige_meal_tracker_demo/constants/sizes.dart';
+import 'package:engaige_meal_tracker_demo/models/sizes/widget_size_values.dart';
 
 /// A utility class that provides responsive design functions.
 ///
-/// This class adjusts sizes of various UI components such as text, padding,
+/// This class adjusts the sizes of various UI components such as text, padding,
 /// and flags, depending on the current screen width.
 class ResponsiveDesignUtils {
   ResponsiveDesignUtils();
@@ -22,14 +26,16 @@ class ResponsiveDesignUtils {
 
   /// Returns the width of the screen title, adjusted based on the screen width.
   ///
+  /// If the screen width exceeds 1100, the value is capped to 1100.
+  ///
   /// - [currentScreenWidth]: The current width of the screen.
   ///
-  /// If the screen width exceeds 1100, the value is capped to 1100.
+  /// Returns the adjusted screen title width.
   static double getScreenTitleWidth(double currentScreenWidth) {
     if (currentScreenWidth > 1100) {
       currentScreenWidth = 1100;
     }
-    return currentScreenWidth * 80 / 100;
+    return currentScreenWidth * 0.80;
   }
 
   /// Returns the font size for list item titles, adjusted according to the screen width.
@@ -93,19 +99,27 @@ class ResponsiveDesignUtils {
         currentScreenWidth);
   }
 
-  /// Ensures the content width does not exceed 800px for padding calculations.
+  /// Calculates the optimal horizontal padding to ensure the content width does not exceed 800px.
   ///
-  /// If the screen width exceeds 1020px, the padding is adjusted accordingly.
+  /// This method adjusts the padding based on the current screen width. If the screen width exceeds
+  /// the maximum allowed width for the widget, the padding is adjusted to center the content.
   ///
+  /// - [minPadding]: The minimum padding to apply if no adjustments are needed.
   /// - [currentScreenWidth]: The current width of the screen.
   ///
-  /// Returns the optimal padding value to use with `EdgeInsets`.
-  static double ensureMaxWidthOf800PXForMainContentToUseAsPadding(
-      double currentScreenWidth) {
-    double optimalPadding = 0;
-    if (currentScreenWidth > 1020) {
-      optimalPadding = (currentScreenWidth - 1000) / 2;
+  /// Returns the optimal padding value to be used with `EdgeInsets`.
+  static double getOptimalHorizontalPadding({
+    required double minPadding,
+    required double currentScreenWidth,
+  }) {
+    double optimalPadding = minPadding;
+    double maxAllowedWidth = kSizes_maxWidgetWidth + (minPadding * 2);
+
+    // Adjust the padding to center the content if the screen exceeds the maximum allowed width.
+    if (currentScreenWidth > maxAllowedWidth) {
+      optimalPadding = (currentScreenWidth - kSizes_maxWidgetWidth) / 2;
     }
+
     return optimalPadding;
   }
 
@@ -114,14 +128,16 @@ class ResponsiveDesignUtils {
   /// - [currentScreenWidth]: The current width of the screen.
   ///
   /// Returns the adjusted sizes and padding for the back navigation icon.
-  static WidgetSizeValues getBackNavigationSizes(
-      {required double currentScreenWidth}) {
+  static WidgetSizeValues getBackNavigationSizes({
+    required double currentScreenWidth,
+  }) {
     WidgetSizeValues widgetSizeValues = WidgetSizeValues();
     widgetSizeValues.size = interpolateBestDouble(
         InterpolationDoubleValues(min: 35, max: 45), currentScreenWidth);
     widgetSizeValues.padding = EdgeInsets.only(
-        left: interpolateBestDouble(
-            InterpolationDoubleValues(min: 5, max: 10), currentScreenWidth));
+      left: interpolateBestDouble(
+          InterpolationDoubleValues(min: 5, max: 10), currentScreenWidth),
+    );
 
     return widgetSizeValues;
   }
@@ -138,8 +154,7 @@ class ResponsiveDesignUtils {
         (values.max - values.min) *
             (currentScreenWidth - values.minWidth) /
             (values.maxWidth - values.minWidth);
-    interpolatedValue = interpolatedValue.clamp(values.min, values.max);
-    return interpolatedValue;
+    return interpolatedValue.clamp(values.min, values.max);
   }
 }
 
@@ -147,11 +162,12 @@ class ResponsiveDesignUtils {
 ///
 /// It is used to store the min/max values for dynamic sizing based on screen width.
 class InterpolationDoubleValues {
-  InterpolationDoubleValues(
-      {this.minWidth = 200,
-        this.maxWidth = 1100,
-        required this.min,
-        required this.max});
+  InterpolationDoubleValues({
+    this.minWidth = 200,
+    this.maxWidth = kSizes_maxWidgetWidth,
+    required this.min,
+    required this.max,
+  });
 
   /// The minimum screen width to start interpolation.
   double minWidth;

@@ -3,6 +3,10 @@
     "mealsOverviewDaily_appBarTitle": "Today's meals",
     "mealsOverviewDaily_appBarBackNavigationText": "Nutrition",
 
+    "mealType_breakfast": "Breakfast",
+    "mealType_lunch": "Lunch",
+    "mealType_dinner": "Dinner",
+    "mealType_snacks": "Snack",
 
     "OK": "OK",
     "Cancel": "Cancel",

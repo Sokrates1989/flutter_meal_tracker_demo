@@ -3,6 +3,11 @@
   "mealsOverviewDaily_appBarTitle": "Heutige Mahlzeiten",
   "mealsOverviewDaily_appBarBackNavigationText": "Ernährung",
 
+  "mealType_breakfast": "Frühstück",
+  "mealType_lunch": "Mittagessen",
+  "mealType_dinner": "Abendessen",
+  "mealType_snacks": "Snack",
+
 
   "OK": "OK",
   "Cancel": "Abbrechen",

@@ -1,4 +1,4 @@
-// Public packages imports.
+// Public package imports.
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +7,7 @@ import 'package:flutter_login/flutter_login.dart';
 // Own package imports.
 import 'package:engaige_meal_tracker_demo/screens/meals_overview_daily.dart';
 import 'package:engaige_meal_tracker_demo/widgets/language_switcher.dart';
+import 'package:engaige_meal_tracker_demo/constants/colors.dart';
 import 'package:engaige_meal_tracker_demo/utils/auth_service.dart';
 import 'package:engaige_meal_tracker_demo/widgets/remember_me_checkbox.dart';
 import 'package:engaige_meal_tracker_demo/constants/themes.dart';
@@ -19,6 +20,7 @@ import 'package:engaige_meal_tracker_demo/utils/shared_pref_utils.dart';
 /// It includes a login and sign-up form, along with options for switching
 /// languages and saving login credentials.
 class WelcomeScreen extends StatefulWidget {
+  /// Identifier used for routing to this screen.
   static const String id = 'welcome_screen';
 
   const WelcomeScreen({super.key});
@@ -29,25 +31,23 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen>
     with SingleTickerProviderStateMixin {
-  late AnimationController controller;
-  late Animation animation;
+  late final AnimationController _controller;
+  late final Animation<Color?> _animation;
 
-  final SharedPrefUtils sharedPref = SharedPrefUtils();
-  bool isRememberUserAndPasswordEnabled = true;
-  String? savedUserName;
-  String? savedPassword;
+  final SharedPrefUtils _sharedPref = SharedPrefUtils();
+  bool _isRememberUserAndPasswordEnabled = true;
+  String? _savedUserName;
+  String? _savedPassword;
 
   @override
   void initState() {
     super.initState();
 
-    // Initialize animation for the background color transition.
-    controller =
-        AnimationController(duration: const Duration(seconds: 1), vsync: this);
-    animation = ColorTween(begin: Colors.blueGrey, end: Colors.white)
-        .animate(controller);
-    controller.forward();
-    controller.addListener(() {
+    // Initialize animation for background color transition.
+    _controller = AnimationController(duration: const Duration(seconds: 1), vsync: this);
+    _animation = ColorTween(begin: Colors.blueGrey, end: Colors.white).animate(_controller);
+    _controller.forward();
+    _controller.addListener(() {
       setState(() {});
     });
 
@@ -57,24 +57,23 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
   @override
   void dispose() {
-    controller.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   /// Loads the user's saved preferences for login credentials and "Remember Me" option.
   Future<void> _getSharedPref() async {
-    isRememberUserAndPasswordEnabled =
-    await sharedPref.get("isRememberUserAndPasswordEnabled");
-    savedUserName = await sharedPref.get("lastLoggedInUserName");
-    savedPassword = await sharedPref.get("lastLoggedInUserPassword");
+    _isRememberUserAndPasswordEnabled = await _sharedPref.get("isRememberUserAndPasswordEnabled");
+    _savedUserName = await _sharedPref.get("lastLoggedInUserName");
+    _savedPassword = await _sharedPref.get("lastLoggedInUserPassword");
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: animation.value,
-      body: savedUserName == null
+      backgroundColor: _animation.value,
+      body: _savedUserName == null
           ? const CircularProgressIndicator()
           : FlutterLogin(
         theme: kThemes_loginTheme,
@@ -82,12 +81,12 @@ class _WelcomeScreenState extends State<WelcomeScreen>
         logo: const AssetImage('assets/images/meal_tracker_demo_icon_circle_400px.png'),
         headerWidget: _buildHeaderWidget(context),
         onLogin: (loginData) => AuthService(context).loginUser(
-            loginData, isRememberUserAndPasswordEnabled),
+            loginData, _isRememberUserAndPasswordEnabled),
         onSignup: (signupData) => AuthService(context).signupUser(
-            signupData, isRememberUserAndPasswordEnabled),
+            signupData, _isRememberUserAndPasswordEnabled),
         hideForgotPasswordButton: true,
-        savedEmail: savedUserName!,
-        savedPassword: savedPassword!,
+        savedEmail: _savedUserName!,
+        savedPassword: _savedPassword!,
         passwordValidator: _passwordValidator,
         userValidator: _userNameValidator,
         userType: LoginUserType.name,
@@ -115,12 +114,12 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         RememberMeCheckbox(
-          isChecked: isRememberUserAndPasswordEnabled,
+          isChecked: _isRememberUserAndPasswordEnabled,
           onChanged: _setRememberMeState,
         ),
         LanguageSwitcher(
           locale: context.locale,
-          dropDownIconColor: Colors.blue[700]?.withOpacity(0.8),
+          dropDownIconColor: kColors_languageSwitcher_dropDownIconColor,
           flagWidth: 34,
         ),
       ],
@@ -132,20 +131,19 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   /// - [newState]: The new state of the "Remember Me" checkbox.
   void _setRememberMeState(bool newState) {
     setState(() {
-      isRememberUserAndPasswordEnabled = newState;
-      sharedPref.set("isRememberUserAndPasswordEnabled", newState);
+      _isRememberUserAndPasswordEnabled = newState;
+      _sharedPref.set("isRememberUserAndPasswordEnabled", newState);
 
       if (!newState) {
-        sharedPref.set("lastLoggedInUserName", "");
-        sharedPref.set("lastLoggedInUserPassword", "");
+        _sharedPref.set("lastLoggedInUserName", "");
+        _sharedPref.set("lastLoggedInUserPassword", "");
       }
     });
   }
 
   /// Called when the login/signup animation completes, navigates to the main app screen.
   Future<void> _onSubmitCompleted() async {
-    User user = await Provider.of<DataProvider>(context, listen: false)
-        .getLoggedInUser_async();
+    User user = await Provider.of<DataProvider>(context, listen: false).getLoggedInUser_async();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const MealsDailyOverviewScreen()),
     );
