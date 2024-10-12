@@ -31,7 +31,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0.2,
       leading: _buildAppBarLeadingWidget(context),
       title: _buildAppBarTitleWidget(),
-      actions: [_buildLanguageSwitcher(context)],
       bottom: _buildAppBarBottomWidget(),
     );
   }
@@ -66,7 +65,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(width: 70), // Spacer to center the title
           const Material(
             type: MaterialType.transparency,
             child: Hero(
@@ -87,6 +85,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+          const SizedBox(width: 40), // Spacer to center the title
         ],
       ),
     );

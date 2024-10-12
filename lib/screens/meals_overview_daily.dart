@@ -25,7 +25,8 @@ class MealsDailyOverviewScreen extends StatefulWidget {
   const MealsDailyOverviewScreen({super.key});
 
   @override
-  State<MealsDailyOverviewScreen> createState() => _MealsDailyOverviewScreenState();
+  State<MealsDailyOverviewScreen> createState() =>
+      _MealsDailyOverviewScreenState();
 }
 
 class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
@@ -59,8 +60,9 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
     _getData();
 
     // Await readiness of the screen.
-    _screenReadyFuture = Provider.of<UIReadinessProvider>(context, listen: false)
-        .awaitMealsOverviewDailyReadiness();
+    _screenReadyFuture =
+        Provider.of<UIReadinessProvider>(context, listen: false)
+            .awaitMealsOverviewDailyReadiness();
   }
 
   @override
@@ -122,10 +124,15 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
               String mealType = mealTypes![index];
               return MealTypeItem(
                 mealType: mealType,
-                meal: getCorrespondingMeal(mealsOfDay: mealsOfDay, mealType: mealType),
-                currentScreenWidth: screenWidth, onEditMeal: () {
+                meal: getCorrespondingMeal(
+                    mealsOfDay: mealsOfDay, mealType: mealType),
+                currentScreenWidth: screenWidth,
+                onEditMeal: () {
                   print("Edit Meal Button clicked");
-              },
+                },
+                onAddMeal: () {
+                  print("Add Meal Button clicked");
+                },
               );
             },
           ),
@@ -143,7 +150,8 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
 
     // Access necessary providers.
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
-    final uiReadinessProvider = Provider.of<UIReadinessProvider>(context, listen: false);
+    final uiReadinessProvider =
+        Provider.of<UIReadinessProvider>(context, listen: false);
 
     // Indicate that the screen values are being fetched.
     uiReadinessProvider.isMealsOverViewDailyScreenReady = false;
@@ -153,9 +161,10 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
 
     // Fetch the meal types from the database.
     mealTypes = await dataProvider.dataHandler.getMealRepo().getMealTypes(user);
-    
+
     // Fetch the meals tracked for the current day.
-    mealsOfDay = await dataProvider.dataHandler.getMealRepo().getMeals(user: user);
+    mealsOfDay =
+        await dataProvider.dataHandler.getMealRepo().getMeals(user: user);
 
     // Indicate that the screen values are fully loaded.
     uiReadinessProvider.isMealsOverViewDailyScreenReady = true;
@@ -163,15 +172,16 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
 
   /// Listens to scroll events and shows or hides the scroll-to-top button.
   void _scrollListener() {
-    const double showOffset = 10.0; // Show button when scrolled past 10.0 offset.
+    const double showOffset =
+        10.0; // Show button when scrolled past 10.0 offset.
 
     setState(() {
       showScrollToTopBtn = scrollController.offset > showOffset;
     });
   }
 
-
-  Meal? getCorrespondingMeal({required String mealType, required List<Meal>? mealsOfDay}) {
+  Meal? getCorrespondingMeal(
+      {required String mealType, required List<Meal>? mealsOfDay}) {
     // Check if mealsOfDay is null or empty
     if (mealsOfDay == null || mealsOfDay.isEmpty) {
       return null;
@@ -188,8 +198,6 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
     // If no matching meal is found, return null
     return null;
   }
-
-
 
   @override
   void dispose() {

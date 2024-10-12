@@ -12,6 +12,7 @@ class MealTypeItem extends StatelessWidget {
   final Meal? meal; // This represents the meal for this type, if available.
   final double currentScreenWidth;
   final Function onEditMeal; // Function to handle meal edit
+  final Function onAddMeal; // Function to handle meal addition
 
   const MealTypeItem({
     super.key,
@@ -19,6 +20,7 @@ class MealTypeItem extends StatelessWidget {
     this.meal,
     required this.currentScreenWidth,
     required this.onEditMeal,
+    required this.onAddMeal,
   });
 
   @override
@@ -32,77 +34,150 @@ class MealTypeItem extends StatelessWidget {
         ),
       ),
       child: Container(
+        padding: EdgeInsets.symmetric(
+          vertical: meal == null ? 15.0 : 10.0,
+          horizontal: 15.0,
+        ),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(30.0),
+          color: kColors_listTile_backgroundColor,
+          borderRadius: BorderRadius.circular(38.0),
           boxShadow: const [
             BoxShadow(
-              color: Colors.black12,
+              color: kColors_boxShadow,
               blurRadius: 5,
               spreadRadius: 1,
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 8.0,
-                horizontal: 22.0,
-              ),
-              title: Text(
-                tr("mealType_$mealType"),
-                style: const TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: kColors_defaultTextColor,
-                ),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    iconSize: 30.0,
-                    color: kColors_mealTypeItem_addIconColor,
-                    onPressed: () {
-                      onEditMeal(); // Trigger edit action
-                    },
-                  ),
-                ],
-              ),
-            ),
+            // Column for meal title and details
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 22.0),
-              child: meal != null
-                  ? Row(
+              padding: const EdgeInsets.only(right: 50.0), // Reserve space for the icon
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildTag(context, tr("fatLevel_heading"), meal!.getFatLevelString()),
-                  const SizedBox(width: 8.0),
-                  _buildTag(context, tr("sugarLevel_heading"), meal!.getSugarLevelString()),
+                  _buildMealTitle(context),
+                  if (meal != null) _buildMealDetails(context),
+                  if (meal != null) const SizedBox(height: 8.0),
                 ],
-              )
-                  : Container(), // Show nothing if no meal data
+              ),
             ),
-            const SizedBox(height: 8.0),
+            // Positioned trailing action button
+            Positioned(
+              right: 15.0,  // Adjust based on your desired spacing
+              top: meal == null ? -2.0 : 15.0,     // Adjust to align properly
+              child: _buildActionButton(),
+            ),
           ],
         ),
       ),
     );
   }
 
-  // Builds a tag for fat/sugar level (e.g., "Fett: Mittel").
-  Widget _buildTag(BuildContext context, String label, String level) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-      decoration: BoxDecoration(
-        color: Colors.red.shade100, // Example tag color
-        borderRadius: BorderRadius.circular(15.0),
+  /// Builds the meal title row.
+  Widget _buildMealTitle(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 8.0,
+        horizontal: 22.0,
       ),
       child: Text(
-        "$label: $level",
-        style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        tr("mealType_$mealType"),
+        style: const TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.bold,
+          color: kColors_defaultTextColor,
+        ),
+      ),
+    );
+  }
+
+  /// Builds the action button (Add or Edit) depending on whether a meal exists.
+  Widget _buildActionButton() {
+    if (meal != null) {
+      return IconButton(
+        icon: const Icon(Icons.edit),
+        iconSize: 30.0,
+        color: kColors_mealTypeItem_addIconColor,
+        onPressed: () {
+          onEditMeal(); // Trigger edit action
+        },
+      );
+    } else {
+      return IconButton(
+        icon: const Icon(Icons.add_box),
+        iconSize: 30.0,
+        color: kColors_mealTypeItem_addIconColor,
+        onPressed: () {
+          onAddMeal(); // Trigger add action
+        },
+      );
+    }
+  }
+
+  /// Builds the meal details (fat level and sugar level) if a meal exists.
+  Widget _buildMealDetails(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 22.0),
+      child: Row(
+        children: [
+          _buildTag(context, tr("fatLevel_heading"), meal!.getFatLevelString()),
+          const SizedBox(width: 8.0),
+          _buildTag(context, tr("sugarLevel_heading"), meal!.getSugarLevelString()),
+        ],
+      ),
+    );
+  }
+
+  /// Builds a tag for displaying fat/sugar levels with distinct label and level styles.
+  Widget _buildTag(BuildContext context, String label, String level) {
+    return Container(
+      padding: const EdgeInsets.all(4.0),
+      decoration: BoxDecoration(
+        color: kColors_tagBackgroundColor,  // Background color for the outer tag
+        borderRadius: BorderRadius.circular(20.0),  // Circular edges
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,  // Wraps content snugly
+        children: [
+          // Label section (e.g., "Fett")
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+            decoration: BoxDecoration(
+              color: Colors.transparent,  // Transparent for the label
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                bottomLeft: Radius.circular(15.0),
+              ),
+            ),
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: kColors_tagLabelColor,  // Text color for the label
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          // Level section (e.g., "Mittel")
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+            decoration: const BoxDecoration(
+              color: kColors_tagLevelColor,  // Solid color for the level
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(15.0),
+                bottomRight: Radius.circular(15.0),
+              ),
+            ),
+            child: Text(
+              level,
+              style: const TextStyle(
+                color: kColors_tagLevelTextColor,  // White text on colored background
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
