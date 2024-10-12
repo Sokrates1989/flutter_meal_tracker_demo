@@ -16,8 +16,8 @@ const kColors_flutterLoginTheme_primaryColor = kColors_primary;
 const kColors_flutterLoginTheme_titleTextColor = Color(0xFFDEE3D9);
 
 
-/// MealsDailyOverviewScreen colours.
-const kColors_mealsOverViewScreenDaily_appBar_bottomDividerColor = Color(0xFFAAAAAA);
+/// AppBar colours.
+const kColors_appBar_bottomDividerColor = Color(0xFFDDDDDD);
 
 
 /// Meal Type item colours.

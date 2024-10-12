@@ -112,7 +112,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           const SizedBox(height: 4), // Adds space above the divider
           Container(
-            color: kColors_mealsOverViewScreenDaily_appBar_bottomDividerColor,
+            color: kColors_appBar_bottomDividerColor,
             height: 2.0,
           ),
         ],
