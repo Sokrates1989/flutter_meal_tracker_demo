@@ -1,4 +1,8 @@
+// Public package imports.
 import 'dart:convert';
+
+// Custom package imports.
+import 'package:easy_localization/easy_localization.dart';
 
 /// Represents a Meal tracked in the meal tracker application.
 ///
@@ -44,8 +48,8 @@ class Meal {
       month: map['month'],
       day: map['day'],
       mealType: map['mealType'],
-      fatLevel: map['fatLevel'],
-      sugarLevel: map['sugarLevel'],
+      fatLevel: map['fat_level'],
+      sugarLevel: map['sugar_level'],
     );
   }
 
@@ -75,5 +79,34 @@ class Meal {
   /// This method decodes the JSON and passes it to [fromMap].
   static Meal fromJson(String jsonString) {
     return fromMap(jsonDecode(jsonString));
+  }
+
+
+  /// Converts the fat level to a string representation.
+  String getFatLevelString() {
+    switch (fatLevel) {
+      case 0:
+        return tr('fatLevel_0'); // Low
+      case 1:
+        return tr('fatLevel_1'); // Medium
+      case 2:
+        return tr('fatLevel_2'); // High
+      default:
+        return tr('fatLevel_unknown'); // Unknown
+    }
+  }
+
+  /// Converts the sugar level to a string representation.
+  String getSugarLevelString() {
+    switch (sugarLevel) {
+      case 0:
+        return tr('sugarLevel_0'); // Low
+      case 1:
+        return tr('sugarLevel_1'); // Medium
+      case 2:
+        return tr('sugarLevel_2'); // High
+      default:
+        return tr('sugarLevel_unknown'); // Unknown
+    }
   }
 }

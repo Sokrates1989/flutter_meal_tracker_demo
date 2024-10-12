@@ -76,6 +76,65 @@ class ApiMealRepo {
     }
   }
 
+
+  /// Fetches meals for a specific day (defaults to the current day).
+  ///
+  /// This method sends a request to retrieve meals for the provided day. If no
+  /// day is provided, it defaults to the current date.
+  ///
+  /// Returns an [ApiReturn] containing the result of the operation.
+  Future<ApiReturn> getMeals({required User user, DateTime? day}) async {
+    // If no day is provided, use today's date
+    day ??= DateTime.now();
+
+    // Format the day into a string (yyyy-MM-dd) to send to the API
+    final String apiEndpointUrl = '$_baseUrl/v1/getMeals';
+
+    // Construct the request body with credentials and date.
+    final getDayMealsItemMap = {
+      'credentials': _apiConnector.getCredentialsItemMap(userName: user.userName, hashedPassword: user.hashedPassword!),
+      'year': day.year,
+      'month': day.month,
+      'day': day.day,
+    };
+    final body = json.encode(getDayMealsItemMap);
+
+    try {
+      // Sending the POST request to fetch meals for the specific day
+      final response = await http.post(
+        Uri.parse(apiEndpointUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+
+      // Handling successful response with status code 200
+      if (response.statusCode == 200) {
+        final meals = jsonDecode(response.body)['meals'];
+        return ApiReturn(
+          success: true,
+          returnCode: 200,
+          explanation: 'Successfully fetched meals',
+          data: meals,
+        );
+      } else {
+        _apiConnector.printHttpResponse(response);
+        return ApiReturn(
+          success: false,
+          returnCode: response.statusCode,
+          explanation: '${response.reasonPhrase} ${response.body}',
+        );
+      }
+    } catch (e) {
+      // Handling any errors that occur during the request
+      return ApiReturn(
+        success: false,
+        returnCode: 599,
+        explanation: e.toString(),
+      );
+    }
+  }
+
+
   /// Adds a new meal entry to the backend via the API.
   ///
   /// This method sends a POST request to add a meal to the database. It

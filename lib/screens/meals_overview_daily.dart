@@ -1,13 +1,14 @@
 // Public package imports.
-import 'package:engaige_meal_tracker_demo/utils/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart' hide NavigationMode;
 
 // Own package imports.
 import 'package:engaige_meal_tracker_demo/constants/colors.dart';
 import 'package:engaige_meal_tracker_demo/models/user.dart';
+import 'package:engaige_meal_tracker_demo/models/meal.dart';
 import 'package:engaige_meal_tracker_demo/providers/ui_readiness_provider.dart';
 import 'package:engaige_meal_tracker_demo/providers/data_provider.dart';
+import 'package:engaige_meal_tracker_demo/utils/custom_app_bar.dart';
 import 'package:engaige_meal_tracker_demo/widgets/meal_type_item.dart';
 import 'package:engaige_meal_tracker_demo/widgets/scroll_to_top_fab.dart';
 
@@ -37,6 +38,9 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
 
   /// A list of meal types for each day to build the UI.
   late final List<String>? mealTypes;
+
+  /// The list of meals the user tracked.
+  late List<Meal>? mealsOfDay;
 
   /// Scroll controller to manage scrolling within the screen.
   final ScrollController scrollController = ScrollController();
@@ -118,7 +122,10 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
               String mealType = mealTypes![index];
               return MealTypeItem(
                 mealType: mealType,
-                currentScreenWidth: screenWidth,
+                meal: getCorrespondingMeal(mealsOfDay: mealsOfDay, mealType: mealType),
+                currentScreenWidth: screenWidth, onEditMeal: () {
+                  print("Edit Meal Button clicked");
+              },
               );
             },
           ),
@@ -146,6 +153,9 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
 
     // Fetch the meal types from the database.
     mealTypes = await dataProvider.dataHandler.getMealRepo().getMealTypes(user);
+    
+    // Fetch the meals tracked for the current day.
+    mealsOfDay = await dataProvider.dataHandler.getMealRepo().getMeals(user: user);
 
     // Indicate that the screen values are fully loaded.
     uiReadinessProvider.isMealsOverViewDailyScreenReady = true;
@@ -159,6 +169,27 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
       showScrollToTopBtn = scrollController.offset > showOffset;
     });
   }
+
+
+  Meal? getCorrespondingMeal({required String mealType, required List<Meal>? mealsOfDay}) {
+    // Check if mealsOfDay is null or empty
+    if (mealsOfDay == null || mealsOfDay.isEmpty) {
+      return null;
+    }
+
+    // Loop through the list of meals
+    for (Meal meal in mealsOfDay) {
+      // Check if the mealType matches
+      if (meal.mealType == mealType) {
+        return meal; // Return the matching meal
+      }
+    }
+
+    // If no matching meal is found, return null
+    return null;
+  }
+
+
 
   @override
   void dispose() {

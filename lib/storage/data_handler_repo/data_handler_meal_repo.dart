@@ -35,6 +35,36 @@ class DataHandlerMealRepo {
     return mealTypes;
   }
 
+
+  /// Fetches meals for a specific day (defaults to the current day).
+  ///
+  /// This method interacts with the API to fetch meals for the provided day.
+  /// If no day is provided, it defaults to the current date.
+  ///
+  /// - [user]: The `User` object representing the current user.
+  /// - [day]: (Optional) The date for which to fetch the meals. If not provided, defaults to today.
+  ///
+  /// Returns a `Future<List<Meal>?>` containing the meals for the specified day, or `null` if the request fails.
+  Future<List<Meal>?> getMeals({required User user, DateTime? day}) async {
+    // Use today's date if no day is provided
+    day ??= DateTime.now();
+
+    // Fetch meals from the API
+    final ApiReturn apiResponse = await _apiConnector.getMealRepo().getMeals(day: day, user: user);
+
+    // If the API request was not successful, return null.
+    if (!apiResponse.success) {
+      return null;
+    }
+
+    // Map the API response data to a list of Meal objects using fromMap
+    final List<Meal> meals = List<Meal>.from(
+      apiResponse.data.map((meal) => Meal.fromMap(meal)),
+    );
+
+    return meals;
+  }
+
   /// Adds a new meal to the database via the API.
   ///
   /// This method sends a new `Meal` object to the API to be stored in the database.

@@ -8,6 +8,20 @@
     "mealType_dinner": "Dinner",
     "mealType_snacks": "Snack",
 
+
+    "sugarLevel_heading" : "Sugar",
+    "sugarLevel_0": "Low",
+    "sugarLevel_1": "Medium",
+    "sugarLevel_2": "High",
+    "sugarLevel_unknown": "Unknown",
+
+    "fatLevel_heading" : "Fat",
+    "fatLevel_0": "Low",
+    "fatLevel_1": "Medium",
+    "fatLevel_2": "High",
+    "fatLevel_unknown": "Unknown",
+
+
     "OK": "OK",
     "Cancel": "Cancel",
     "Delete": "Delete",

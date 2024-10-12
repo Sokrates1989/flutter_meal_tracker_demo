@@ -9,6 +9,19 @@
   "mealType_snacks": "Snack",
 
 
+  "sugarLevel_heading" : "Zucker",
+  "sugarLevel_0": "Niedrig",
+  "sugarLevel_1": "Mittel",
+  "sugarLevel_2": "Hoch",
+  "sugarLevel_unknown": "Unbekannt",
+
+  "fatLevel_heading" : "Fett",
+  "fatLevel_0": "Niedrig",
+  "fatLevel_1": "Mittel",
+  "fatLevel_2": "Hoch",
+  "fatLevel_unknown": "Unbekannt",
+
+
   "OK": "OK",
   "Cancel": "Abbrechen",
   "Delete": "Löschen",
