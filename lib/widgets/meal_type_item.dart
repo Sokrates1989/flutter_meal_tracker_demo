@@ -1,8 +1,12 @@
+// Public package imports.
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+
+// Custom package imports.
 import 'package:engaige_meal_tracker_demo/constants/colors.dart';
 import 'package:engaige_meal_tracker_demo/models/meal.dart';
 import 'package:engaige_meal_tracker_demo/utils/ui/responsive_design_utils.dart';
+import 'package:engaige_meal_tracker_demo/constants/sizes.dart';
 
 /// A widget representing a meal type item in a list.
 /// This widget displays the meal type, allows editing meals, and shows current
@@ -37,8 +41,8 @@ class MealTypeItem extends StatelessWidget {
       ),
       child: Container(
         padding: EdgeInsets.symmetric(
-          vertical: meal == null ? 15.0 : 10.0,
-          horizontal: 15.0,
+          vertical: getInnerVerticalPadding(),
+          horizontal: getInnerHorizontalPadding(),
         ),
         decoration: BoxDecoration(
           color: kColors_listTile_backgroundColor,
@@ -67,8 +71,8 @@ class MealTypeItem extends StatelessWidget {
             ),
             // Positioned trailing action button
             Positioned(
-              right: 15.0,  // Adjust based on your desired spacing
-              top: meal == null ? -2.0 : 15.0,     // Adjust to align properly
+              right: getActionButtonRightPosition(),  // Adjust based on your desired spacing
+              top: getActionButtonTopPosition(),     // Adjust to align properly
               child: _buildActionButton(),
             ),
           ],
@@ -76,6 +80,70 @@ class MealTypeItem extends StatelessWidget {
       ),
     );
   }
+
+
+  /// Gets action button right position responsively.
+  double getActionButtonRightPosition() {
+    return ResponsiveDesignUtils.interpolateBestDouble(
+        InterpolationDoubleValues(
+            min: kSizes_mealTypeItem_actionButtons_rightPosition_min,
+            max: kSizes_mealTypeItem_actionButtons_rightPosition_max),
+        currentScreenWidth);
+  }
+
+
+
+  /// Gets action button top position responsively.
+  double getActionButtonTopPosition() {
+    double topPosition = 10.0;
+    if (meal == null) {
+      topPosition = ResponsiveDesignUtils.interpolateBestDouble(
+          InterpolationDoubleValues(
+              min: kSizes_mealTypeItem_actionButtons_topPosition_noMealYet_min,
+              max: kSizes_mealTypeItem_actionButtons_topPosition_noMealYet_max),
+          currentScreenWidth,
+          invertedLogic: true);
+    }
+    else {
+      topPosition = ResponsiveDesignUtils.interpolateBestDouble(
+          InterpolationDoubleValues(
+              min: kSizes_mealTypeItem_actionButtons_topPosition_mealAlreadySet_min,
+              max: kSizes_mealTypeItem_actionButtons_topPosition_mealAlreadySet_max),
+          currentScreenWidth);
+    }
+    return topPosition;
+  }
+
+  /// Gets inner vertical padding responsively.
+  double getInnerVerticalPadding() {
+    double verticalPadding = 10.0;
+    if (meal == null) {
+      verticalPadding = ResponsiveDesignUtils.interpolateBestDouble(
+          InterpolationDoubleValues(
+              min: kSizes_mealTypeItem_innerPadding_noMealYet_vertical_min,
+              max: kSizes_mealTypeItem_innerPadding_noMealYet_vertical_max),
+          currentScreenWidth);
+    }
+    else {
+      verticalPadding = ResponsiveDesignUtils.interpolateBestDouble(
+          InterpolationDoubleValues(
+              min: kSizes_mealTypeItem_innerPadding_mealAlreadySet_vertical_min,
+              max: kSizes_mealTypeItem_innerPadding_mealAlreadySet_vertical_max),
+          currentScreenWidth);
+    }
+    return verticalPadding;
+  }
+
+  /// Gets inner horizontal padding responsively.
+  double getInnerHorizontalPadding() {
+    return ResponsiveDesignUtils.interpolateBestDouble(
+        InterpolationDoubleValues(
+            min: kSizes_mealTypeItem_innerPadding_horizontal_min,
+            max: kSizes_mealTypeItem_innerPadding_horizontal_max),
+        currentScreenWidth);
+  }
+
+
 
   /// Builds the meal title row.
   Widget _buildMealTitle(BuildContext context) {
@@ -86,8 +154,12 @@ class MealTypeItem extends StatelessWidget {
       ),
       child: Text(
         tr("mealType_$mealType"),
-        style: const TextStyle(
-          fontSize: 17,
+        style: TextStyle(
+          fontSize: ResponsiveDesignUtils.interpolateBestDouble(
+              InterpolationDoubleValues(
+                  min: kSizes_mealTypeItem_title_font_min,
+                  max: kSizes_mealTypeItem_title_font_max),
+              currentScreenWidth),
           fontWeight: FontWeight.bold,
           color: kColors_defaultTextColor,
         ),
@@ -96,6 +168,7 @@ class MealTypeItem extends StatelessWidget {
   }
 
   /// Builds the action button (Add or Edit) depending on whether a meal exists.
+  /// Builds the action button (Add, Edit, Delete) depending on whether a meal exists.
   Widget _buildActionButton() {
     if (meal != null) {
       return Row(
@@ -103,17 +176,37 @@ class MealTypeItem extends StatelessWidget {
         children: [
           IconButton(
             icon: const Icon(Icons.edit),
-            iconSize: 30.0,
+            iconSize: ResponsiveDesignUtils.interpolateBestDouble(
+              InterpolationDoubleValues(
+                min: kSizes_mealTypeItem_actionButtons_iconSize_min,
+                max: kSizes_mealTypeItem_actionButtons_iconSize_max,
+              ),
+              currentScreenWidth,
+            ),
             color: kColors_mealTypeItem_iconColors,
             onPressed: () {
               onEditMeal(); // Trigger edit action
             },
           ),
-          const SizedBox(width: 8.0),  // Space between edit and delete icons
+          SizedBox(
+            width: ResponsiveDesignUtils.interpolateBestDouble(
+              InterpolationDoubleValues(
+                min: kSizes_mealTypeItem_actionButtons_spacing_min,
+                max: kSizes_mealTypeItem_actionButtons_spacing_max,
+              ),
+              currentScreenWidth,
+            ),
+          ),  // Dynamic space between edit and delete icons
           IconButton(
             icon: const Icon(Icons.delete),
-            iconSize: 30.0,
-            color: kColors_mealTypeItem_iconColors,  // You can change this color to fit your theme
+            iconSize: ResponsiveDesignUtils.interpolateBestDouble(
+              InterpolationDoubleValues(
+                min: kSizes_mealTypeItem_actionButtons_iconSize_min,
+                max: kSizes_mealTypeItem_actionButtons_iconSize_max,
+              ),
+              currentScreenWidth,
+            ),
+            color: kColors_mealTypeItem_iconColors,
             onPressed: () {
               onDeleteMeal(); // Trigger delete action
             },
@@ -123,7 +216,13 @@ class MealTypeItem extends StatelessWidget {
     } else {
       return IconButton(
         icon: const Icon(Icons.add_box),
-        iconSize: 30.0,
+        iconSize: ResponsiveDesignUtils.interpolateBestDouble(
+          InterpolationDoubleValues(
+            min: kSizes_mealTypeItem_actionButtons_iconSize_min,
+            max: kSizes_mealTypeItem_actionButtons_iconSize_max,
+          ),
+          currentScreenWidth,
+        ),
         color: kColors_mealTypeItem_iconColors,
         onPressed: () {
           onAddMeal(); // Trigger add action
@@ -131,6 +230,7 @@ class MealTypeItem extends StatelessWidget {
       );
     }
   }
+
 
   /// Builds the meal details (fat level and sugar level) if a meal exists.
   Widget _buildMealDetails(BuildContext context) {
@@ -149,46 +249,138 @@ class MealTypeItem extends StatelessWidget {
   /// Builds a tag for displaying fat/sugar levels with distinct label and level styles.
   Widget _buildTag(BuildContext context, String label, String level) {
     return Container(
-      padding: const EdgeInsets.all(4.0),
+      padding: EdgeInsets.all(
+        ResponsiveDesignUtils.interpolateBestDouble(
+          InterpolationDoubleValues(
+            min: kSizes_mealTypeItem_mealDetailsTag_padding_min,
+            max: kSizes_mealTypeItem_mealDetailsTag_padding_max,
+          ),
+          currentScreenWidth,
+        ),
+      ),
       decoration: BoxDecoration(
         color: kColors_tagBackgroundColor,  // Background color for the outer tag
-        borderRadius: BorderRadius.circular(20.0),  // Circular edges
+        borderRadius: BorderRadius.circular(
+          ResponsiveDesignUtils.interpolateBestDouble(
+            InterpolationDoubleValues(
+              min: kSizes_mealTypeItem_mealDetailsTag_borderRadius_min,
+              max: kSizes_mealTypeItem_mealDetailsTag_borderRadius_max,
+            ),
+            currentScreenWidth,
+          ),
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,  // Wraps content snugly
         children: [
           // Label section (e.g., "Fett")
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+            padding: EdgeInsets.symmetric(
+              horizontal: ResponsiveDesignUtils.interpolateBestDouble(
+                InterpolationDoubleValues(
+                  min: kSizes_mealTypeItem_mealDetailsTag_paddingHorizontal_min,
+                  max: kSizes_mealTypeItem_mealDetailsTag_paddingHorizontal_max,
+                ),
+                currentScreenWidth,
+              ),
+              vertical: ResponsiveDesignUtils.interpolateBestDouble(
+                InterpolationDoubleValues(
+                  min: kSizes_mealTypeItem_mealDetailsTag_paddingVertical_min,
+                  max: kSizes_mealTypeItem_mealDetailsTag_paddingVertical_max,
+                ),
+                currentScreenWidth,
+              ),
+            ),
             decoration: BoxDecoration(
               color: Colors.transparent,  // Transparent for the label
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(15.0),
-                bottomLeft: Radius.circular(15.0),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(
+                  ResponsiveDesignUtils.interpolateBestDouble(
+                    InterpolationDoubleValues(
+                      min: kSizes_mealTypeItem_mealDetailsTag_cornerRadius_min,
+                      max: kSizes_mealTypeItem_mealDetailsTag_cornerRadius_max,
+                    ),
+                    currentScreenWidth,
+                  ),
+                ),
+                bottomLeft: Radius.circular(
+                  ResponsiveDesignUtils.interpolateBestDouble(
+                    InterpolationDoubleValues(
+                      min: kSizes_mealTypeItem_mealDetailsTag_cornerRadius_min,
+                      max: kSizes_mealTypeItem_mealDetailsTag_cornerRadius_max,
+                    ),
+                    currentScreenWidth,
+                  ),
+                ),
               ),
             ),
             child: Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 color: kColors_tagLabelColor,  // Text color for the label
+                fontSize: ResponsiveDesignUtils.interpolateBestDouble(
+                  InterpolationDoubleValues(
+                    min: kSizes_mealTypeItem_mealDetailsTag_fontSizeLabel_min,
+                    max: kSizes_mealTypeItem_mealDetailsTag_fontSizeLabel_max,
+                  ),
+                  currentScreenWidth,
+                ),
                 fontWeight: FontWeight.w500,
               ),
             ),
           ),
           // Level section (e.g., "Mittel")
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-            decoration: const BoxDecoration(
+            padding: EdgeInsets.symmetric(
+              horizontal: ResponsiveDesignUtils.interpolateBestDouble(
+                InterpolationDoubleValues(
+                  min: kSizes_mealTypeItem_mealDetailsTag_paddingHorizontal_min,
+                  max: kSizes_mealTypeItem_mealDetailsTag_paddingHorizontal_max,
+                ),
+                currentScreenWidth,
+              ),
+              vertical: ResponsiveDesignUtils.interpolateBestDouble(
+                InterpolationDoubleValues(
+                  min: kSizes_mealTypeItem_mealDetailsTag_paddingVertical_min,
+                  max: kSizes_mealTypeItem_mealDetailsTag_paddingVertical_max,
+                ),
+                currentScreenWidth,
+              ),
+            ),
+            decoration: BoxDecoration(
               color: kColors_tagLevelColor,  // Solid color for the level
               borderRadius: BorderRadius.only(
-                topRight: Radius.circular(15.0),
-                bottomRight: Radius.circular(15.0),
+                topRight: Radius.circular(
+                  ResponsiveDesignUtils.interpolateBestDouble(
+                    InterpolationDoubleValues(
+                      min: kSizes_mealTypeItem_mealDetailsTag_cornerRadius_min,
+                      max: kSizes_mealTypeItem_mealDetailsTag_cornerRadius_max,
+                    ),
+                    currentScreenWidth,
+                  ),
+                ),
+                bottomRight: Radius.circular(
+                  ResponsiveDesignUtils.interpolateBestDouble(
+                    InterpolationDoubleValues(
+                      min: kSizes_mealTypeItem_mealDetailsTag_cornerRadius_min,
+                      max: kSizes_mealTypeItem_mealDetailsTag_cornerRadius_max,
+                    ),
+                    currentScreenWidth,
+                  ),
+                ),
               ),
             ),
             child: Text(
               level,
-              style: const TextStyle(
+              style: TextStyle(
                 color: kColors_tagLevelTextColor,  // White text on colored background
+                fontSize: ResponsiveDesignUtils.interpolateBestDouble(
+                  InterpolationDoubleValues(
+                    min: kSizes_mealTypeItem_mealDetailsTag_fontSizeLevel_min,
+                    max: kSizes_mealTypeItem_mealDetailsTag_fontSizeLevel_max,
+                  ),
+                  currentScreenWidth,
+                ),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -197,4 +389,6 @@ class MealTypeItem extends StatelessWidget {
       ),
     );
   }
+
+
 }

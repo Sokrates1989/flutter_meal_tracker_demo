@@ -5,11 +5,13 @@ import 'package:flutter/material.dart' hide NavigationMode;
 
 // Own package imports.
 import 'package:engaige_meal_tracker_demo/constants/colors.dart';
+import 'package:engaige_meal_tracker_demo/constants/sizes.dart';
 import 'package:engaige_meal_tracker_demo/models/user.dart';
 import 'package:engaige_meal_tracker_demo/models/meal.dart';
 import 'package:engaige_meal_tracker_demo/providers/ui_readiness_provider.dart';
 import 'package:engaige_meal_tracker_demo/providers/data_provider.dart';
 import 'package:engaige_meal_tracker_demo/utils/custom_app_bar.dart';
+import 'package:engaige_meal_tracker_demo/utils/ui/responsive_design_utils.dart';
 import 'package:engaige_meal_tracker_demo/widgets/dialogs/loading_dialog.dart';
 import 'package:engaige_meal_tracker_demo/widgets/meal_progress_bar.dart';
 import 'package:engaige_meal_tracker_demo/widgets/meal_type_item.dart';
@@ -107,14 +109,13 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
 
   /// Builds the main body of the screen.
   Widget _buildAppBody() {
-    double screenWidth = MediaQuery.of(context).size.width;
+    double currentScreenWidth = MediaQuery.of(context).size.width;
 
     if (mealTypes == null || mealTypes!.isEmpty) {
       return const Center(
         child: Text('No meal types available'),
       );
     }
-
 
     // Calculate the number of added meals
     int addedMeals = mealsOfDay?.length ?? 0;
@@ -127,9 +128,16 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
           MealProgressBar(
             totalMeals: totalMeals,
             addedMeals: addedMeals,
-            currentScreenWidth: screenWidth,
+            currentScreenWidth: currentScreenWidth,
           ),
-          const SizedBox(height: 35),
+          SizedBox(
+              height: ResponsiveDesignUtils.interpolateBestDouble(
+                  InterpolationDoubleValues(
+                      min:
+                          kSizes_mealsOverview_mainScrollView_topSpacerSize_min,
+                      max:
+                          kSizes_mealsOverview_mainScrollView_topSpacerSize_max),
+                  currentScreenWidth)),
           ListView.builder(
             shrinkWrap: true,
             // Ensures ListView takes up only the necessary space
@@ -142,7 +150,7 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
                 mealType: mealType,
                 meal: getCorrespondingMeal(
                     mealsOfDay: mealsOfDay, mealType: mealType),
-                currentScreenWidth: screenWidth,
+                currentScreenWidth: currentScreenWidth,
                 onAddMeal: () {
                   _showAddEditMealDialog(
                     context: context,
@@ -163,7 +171,8 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
                 onDeleteMeal: () {
                   setState(() {
                     // Find and remove the meal from mealsOfDay
-                    mealsOfDay!.removeWhere((meal) => meal.mealType == mealType);
+                    mealsOfDay!
+                        .removeWhere((meal) => meal.mealType == mealType);
                   });
                 },
               );
@@ -227,7 +236,6 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
     );
   }
 
-
   void _saveChanges() async {
     // Instantiate the LoadingDialog
     LoadingDialog loadingDialog = LoadingDialog(buildContext: context);
@@ -246,7 +254,7 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
     // Compare mealsOfDay with initialMealsOfDay for additions and edits
     for (Meal meal in mealsOfDay!) {
       final correspondingInitialMeal = initialMealsOfDay!.firstWhere(
-            (initialMeal) => initialMeal.mealType == meal.mealType,
+        (initialMeal) => initialMeal.mealType == meal.mealType,
         orElse: () => Meal(
           year: meal.year,
           month: meal.month,
@@ -269,7 +277,7 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
     // Identify meals to delete (present in initialMealsOfDay but not in mealsOfDay)
     for (Meal initialMeal in initialMealsOfDay!) {
       final correspondingCurrentMeal = mealsOfDay!.firstWhere(
-            (currentMeal) => currentMeal.mealType == initialMeal.mealType,
+        (currentMeal) => currentMeal.mealType == initialMeal.mealType,
         orElse: () => Meal(
           year: initialMeal.year,
           month: initialMeal.month,
@@ -288,7 +296,8 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
 
     // Handle adding new meals
     for (Meal newMeal in mealsToAdd) {
-      bool success = await dataHandlerMealRepo.addMeal(meal: newMeal, user: user);
+      bool success =
+          await dataHandlerMealRepo.addMeal(meal: newMeal, user: user);
       if (!success) {
         // Handle failure to add meal (e.g., show an error message)
         print("Failed to add meal: ${newMeal.mealType}");
@@ -297,7 +306,8 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
 
     // Handle editing existing meals
     for (Meal updatedMeal in mealsToEdit) {
-      bool success = await dataHandlerMealRepo.editMeal(meal: updatedMeal, user: user);
+      bool success =
+          await dataHandlerMealRepo.editMeal(meal: updatedMeal, user: user);
       if (!success) {
         // Handle failure to edit meal (e.g., show an error message)
         print("Failed to edit meal: ${updatedMeal.mealType}");
@@ -306,7 +316,8 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
 
     // Handle deleting meals
     for (Meal mealToDelete in mealsToDelete) {
-      bool success = await dataHandlerMealRepo.deleteMeal(meal: mealToDelete, user: user);
+      bool success =
+          await dataHandlerMealRepo.deleteMeal(meal: mealToDelete, user: user);
       if (!success) {
         // Handle failure to delete meal (e.g., show an error message)
         print("Failed to delete meal: ${mealToDelete.mealType}");
@@ -322,8 +333,6 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
     // Close the loading dialog once all operations are complete
     loadingDialog.closeLoadingDialog();
   }
-
-
 
   void _cancelChanges() {
     setState(() {

@@ -76,7 +76,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       body: _savedUserName == null
           ? const CircularProgressIndicator()
           : FlutterLogin(
-        theme: kThemes_loginTheme,
+        theme: getLoginTheme(context),
         title: tr('title'),
         logo: const AssetImage('assets/images/meal_tracker_demo_icon_circle_400px.png'),
         headerWidget: _buildHeaderWidget(context),
@@ -153,7 +153,6 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
   /// Called when the login/signup animation completes, navigates to the main app screen.
   Future<void> _onSubmitCompleted() async {
-    User user = await Provider.of<DataProvider>(context, listen: false).getLoggedInUser_async();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const MealsDailyOverviewScreen()),
     );

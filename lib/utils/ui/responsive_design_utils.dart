@@ -143,21 +143,37 @@ class ResponsiveDesignUtils {
 
     return widgetSizeValues;
   }
-
   /// Interpolates a value between a minimum and maximum range based on the screen width.
+  /// Optionally inverts the logic, returning higher values for smaller widths and
+  /// lower values for larger widths if [invertedLogic] is set to true.
   ///
   /// - [values]: An `InterpolationDoubleValues` object containing the min, max, minWidth, and maxWidth values.
   /// - [currentScreenWidth]: The current width of the screen.
+  /// - [invertedLogic]: A boolean flag that reverses the interpolation logic if set to true.
   ///
   /// Returns the interpolated value.
   static double interpolateBestDouble(
-      InterpolationDoubleValues values, double currentScreenWidth) {
-    double interpolatedValue = values.min +
-        (values.max - values.min) *
-            (currentScreenWidth - values.minWidth) /
-            (values.maxWidth - values.minWidth);
+      InterpolationDoubleValues values, double currentScreenWidth, {bool invertedLogic = false}) {
+    double interpolatedValue;
+
+    if (invertedLogic) {
+      // Invert the logic: smaller screen width returns higher values and vice versa
+      interpolatedValue = values.max -
+          (values.max - values.min) *
+              (currentScreenWidth - values.minWidth) /
+              (values.maxWidth - values.minWidth);
+    } else {
+      // Normal interpolation: smaller screen width returns lower values
+      interpolatedValue = values.min +
+          (values.max - values.min) *
+              (currentScreenWidth - values.minWidth) /
+              (values.maxWidth - values.minWidth);
+    }
+
+    // Ensure the interpolated value stays within the range of [min, max]
     return interpolatedValue.clamp(values.min, values.max);
   }
+
 }
 
 /// A data class that holds the minimum and maximum values for interpolation.
@@ -165,7 +181,7 @@ class ResponsiveDesignUtils {
 /// It is used to store the min/max values for dynamic sizing based on screen width.
 class InterpolationDoubleValues {
   InterpolationDoubleValues({
-    this.minWidth = 200,
+    this.minWidth = kSizes_minScreenWidth,
     this.maxWidth = kSizes_maxWidgetWidth,
     required this.min,
     required this.max,

@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:engaige_meal_tracker_demo/constants/colors.dart';
 import 'package:engaige_meal_tracker_demo/providers/navigation_provider.dart';
 import 'package:engaige_meal_tracker_demo/widgets/language_switcher.dart';
+import 'package:engaige_meal_tracker_demo/constants/sizes.dart';
+import 'package:engaige_meal_tracker_demo/utils/ui/responsive_design_utils.dart';
 
 /// A custom AppBar widget with a leading back button, title, and a language switcher.
 ///
@@ -37,9 +39,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   /// Builds the leading widget of the AppBar, containing a back button and label.
   Row _buildAppBarLeadingWidget(BuildContext context) {
+    // Get currentScreenWidth for responsive layout building.
+    double currentScreenWidth = MediaQuery.of(context).size.width;
+
     return Row(
       children: [
         IconButton(
+          iconSize: ResponsiveDesignUtils.interpolateBestDouble(
+              InterpolationDoubleValues(
+                  min: kSizes_appBar_backNavigation_iconSize_min,
+                  max: kSizes_appBar_backNavigation_iconSize_max),
+              currentScreenWidth),
           icon: const Icon(Icons.arrow_back),
           color: kColors_backNavigationIconColor,
           onPressed: () {
@@ -50,8 +60,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         Text(
           tr("mealsOverviewDaily_appBarBackNavigationText"),
           style: TextStyle(
-            color:kColors_backNavigationTextColor,
-            fontSize: 20,
+            color: kColors_backNavigationTextColor,
+            fontSize: ResponsiveDesignUtils.interpolateBestDouble(
+                InterpolationDoubleValues(
+                    min: kSizes_appBar_backNavigation_textSize_min,
+                    max: kSizes_appBar_backNavigation_textSize_max),
+                currentScreenWidth),
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -61,17 +75,33 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   /// Builds the title widget for the AppBar, displaying the logo and the title text.
   Center _buildAppBarTitleWidget() {
+    // Get currentScreenWidth for responsive layout building.
+    double currentScreenWidth = MediaQuery.of(context).size.width;
+
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Material(
+          SizedBox(
+              width: ResponsiveDesignUtils.interpolateBestDouble(
+                  InterpolationDoubleValues(
+                      min: kSizes_appBar_title_startSpacerWidth_min,
+                      max: kSizes_appBar_title_startSpacerWidth_max),
+                  currentScreenWidth,
+                  invertedLogic: true)),
+          // Spacer to center the title
+          Material(
             type: MaterialType.transparency,
             child: Hero(
               tag: 'logo',
               child: CircleAvatar(
-                radius: 25,
-                backgroundImage: AssetImage('assets/images/meal_tracker_demo_icon_circle_400px.png'),
+                radius: ResponsiveDesignUtils.interpolateBestDouble(
+                    InterpolationDoubleValues(
+                        min: kSizes_appBar_title_iconSize_min,
+                        max: kSizes_appBar_title_iconSize_max),
+                    currentScreenWidth),
+                backgroundImage: AssetImage(
+                    'assets/images/meal_tracker_demo_icon_circle_400px.png'),
                 backgroundColor: kColors_backgroundColor_default,
               ),
             ),
@@ -79,13 +109,24 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           const SizedBox(width: 10),
           Text(
             tr("mealsOverviewDaily_appBarTitle"),
-            style: const TextStyle(
+            style: TextStyle(
               color: kColors_defaultTextColor,
-              fontSize: 20,
+              fontSize: ResponsiveDesignUtils.interpolateBestDouble(
+                  InterpolationDoubleValues(
+                      min: kSizes_appBar_title_textFont_min,
+                      max: kSizes_appBar_title_textFont_max),
+                  currentScreenWidth),
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(width: 40), // Spacer to center the title
+          SizedBox(
+              width: ResponsiveDesignUtils.interpolateBestDouble(
+                  InterpolationDoubleValues(
+                      min: kSizes_appBar_title_endSpacerWidth_min,
+                      max: kSizes_appBar_title_endSpacerWidth_max),
+                  currentScreenWidth,
+                  invertedLogic: false)),
+          // Spacer to center the title
         ],
       ),
     );

@@ -4,22 +4,29 @@ import 'package:flutter_login/flutter_login.dart';
 
 // Custom package imports.
 import 'colors.dart';
-
+import 'package:engaige_meal_tracker_demo/utils/ui/responsive_design_utils.dart';
 
 /// The login theme configuration for the `FlutterLogin` widget.
 ///
 /// This theme customizes the appearance of the login page, including colors,
 /// input fields, and title styles.
-final kThemes_loginTheme = LoginTheme(
-  pageColorLight: kColors_flutterLoginTheme_pageColorLight,
-  primaryColor: kColors_flutterLoginTheme_primaryColor,
-  inputTheme: kThemes_flutterLogin_inputDecorationTheme,
-  titleStyle: const TextStyle(
-    color: kColors_flutterLoginTheme_titleTextColor, // Makes the login title text white.
-    fontSize: 48,
-    fontWeight: FontWeight.bold,
-  ),
-);
+LoginTheme getLoginTheme(BuildContext context) {
+  // Dynamically calculate the font size based on the screen width.
+  double currentScreenWidth = MediaQuery.of(context).size.width;
+  double dynamicFontSize = ResponsiveDesignUtils.interpolateBestDouble(
+      InterpolationDoubleValues(min: 32, max: 48), currentScreenWidth);
+
+  return LoginTheme(
+    pageColorLight: kColors_flutterLoginTheme_pageColorLight,
+    primaryColor: kColors_flutterLoginTheme_primaryColor,
+    inputTheme: kThemes_flutterLogin_inputDecorationTheme,
+    titleStyle: TextStyle(
+      color: kColors_flutterLoginTheme_titleTextColor,
+      fontSize: dynamicFontSize, // Dynamic font size
+      fontWeight: FontWeight.bold,
+    ),
+  );
+}
 
 /// The input decoration theme for the `FlutterLogin` widget.
 ///

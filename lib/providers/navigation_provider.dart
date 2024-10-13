@@ -1,12 +1,9 @@
-import 'package:engaige_meal_tracker_demo/providers/data_provider.dart';
 import 'package:engaige_meal_tracker_demo/screens/welcome_screen.dart';
-import 'package:engaige_meal_tracker_demo/utils/UI/responsive_design_utils.dart';
+import 'package:engaige_meal_tracker_demo/utils/ui/responsive_design_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../models/sizes/widget_size_values.dart';
-import '../models/user.dart';
 
 /// The `NavigationProvider` class is responsible for managing navigation-related
 /// state across the app. This includes handling top menu navigation, back
@@ -53,8 +50,6 @@ class NavigationProvider extends ChangeNotifier {
   ///
   /// [context] is required to access the user's data.
   Future<void> setStartingNavigation(BuildContext context) async {
-    final dataHandler = Provider.of<DataProvider>(context, listen: false).dataHandler;
-    final User user = await Provider.of<DataProvider>(context, listen: false).getLoggedInUser_async();
 
     _navigationDestination = NavigationDestination.mealsOverviewDaily;
 
