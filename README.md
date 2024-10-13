@@ -134,7 +134,8 @@ For additional build commands, such as building APKs for Android or iOS builds, 
 
 You can download the latest release of the Flutter Meal Tracker App from the link below:
 
-[Download the Release APK](https://github.com/Sokrates1989/flutter_engaige_meal_tracker_demo/releases)
+- [Download the Release APK](releases/android)
+- [View Releases](https://github.com/Sokrates1989/flutter_engaige_meal_tracker_demo/releases)
 
 ## Next Steps
 
