@@ -53,3 +53,55 @@ Enable Developer Mode and restart your iPhone if prompted.
 - On your iPhone, you may be prompted to trust the developer. Go to **Settings** → **General** → **Device Management** and trust your developer account.
 
 Once completed, the Flutter app will be installed and running on your iOS device, allowing you to debug it directly from Android Studio.
+
+## Extra Troubleshooting Section
+
+### 1. `PhoneNumberKit` Not Found in Swift Code:
+- Ensure the following is added to the `Podfile`:
+  ```ruby
+  use_frameworks!
+  ```
+- Reinstall pods:
+  ```bash
+  cd ios
+  pod install
+  ```
+- Clean the build folder in Xcode: **Product** → **Clean Build Folder**.
+- Make sure `PhoneNumberKit` is imported correctly:
+  ```swift
+  import PhoneNumberKit
+  ```
+
+### 2. Missing `.xcconfig` File:
+- Run `flutter pub get` to regenerate the necessary Flutter build settings, including the `Generated.xcconfig` file:
+  ```bash
+  flutter pub get
+  ```
+
+### 3. Linking `.xcconfig` Manually:
+- In Xcode, navigate to **Build Settings** of the `Runner` target.
+- Find **Base Configuration** for both **Debug** and **Release**.
+- Set them to:
+  ```
+  ios/Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig
+  ios/Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig
+  ```
+
+### 4. Swift Compatibility Issues:
+- Make sure the **Swift Language Version** is set to the latest supported version in **Build Settings**.
+- If using an older Xcode version, specify the compatible version of the `PhoneNumberKit` library in the `Podfile`:
+  ```ruby
+  pod 'PhoneNumberKit', '~> 3.0'
+  ```
+
+### 5. Manual Clean and Rebuild:
+- If issues persist, perform a clean rebuild:
+  ```bash
+  flutter clean
+  flutter run
+  pod deintegrate
+  pod install
+  ```
+
+Following these steps will help resolve issues related to missing dependencies, linking errors, and framework compatibility.
+
