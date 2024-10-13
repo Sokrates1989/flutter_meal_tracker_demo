@@ -7,19 +7,21 @@ A Flutter app that allows users to track meal parameters (Fat and Sugar levels) 
 1. [Features](#features)
 2. [Database Schema](#database-schema)
 3. [Plugins Used](#plugins-used)
-   - [SQLite](#sqlite)
-   - [Flutter Login Plugin](#flutter-login-plugin)
-   - [Easy Localization](#easy-localization)
-   - [Provider](#provider)
+    - [SQLite](#sqlite)
+    - [Flutter Login Plugin](#flutter-login-plugin)
+    - [Easy Localization](#easy-localization)
+    - [Provider](#provider)
 4. [Setup Guide](#setup-guide)
-   - [Installation](#installation)
-      - [Build Web App](#building-the-web-app)
-      - [Android Setup](docs/guides/README_Debug_Android_Flutter.md)
-      - [iOS Setup](docs/guides/README_Debug_iOS_Flutter.md)
+    - [Installation](#installation)
+        - [Build Web App](#build-the-web-app)
+        - [Build Android Release](#build-android-release)
+        - [Android Setup](docs/guides/README_Debug_Android_Flutter.md)
+        - [iOS Setup](docs/guides/README_Debug_iOS_Flutter.md)
 5. [Running the App](#running-the-app)
-6. [Webapp](#deployed-webapp)
-7. [Documentation](#documentation)
-8. [License](#license)
+6. [Download APK](#download-apk)
+7. [Webapp](#deployed-webapp)
+8. [Documentation](#documentation)
+9. [License](#license)
 
 ## Features
 
@@ -91,12 +93,21 @@ The app uses the [Flutter Login Plugin](https://pub.dev/packages/flutter_login) 
 
 ### Installation
 
-#### Building the Web App
+#### Build the Web App
 
 To build the web version of the app, use the following command:
 
 ```bash
 flutter build web --release --web-renderer html --target lib/main.dart
+```
+
+
+#### Build Android Release
+
+To build the android release version of the app, use the following command:
+
+```bash
+flutter build apk --release
 ```
 
 
@@ -118,6 +129,11 @@ flutter run
 
 For additional build commands, such as building APKs for Android or iOS builds, refer to the Flutter documentation.
 
+## Download APK
+
+You can download the latest release of the Flutter Meal Tracker App from the link below:
+
+[Download the Release APK](https://github.com/Sokrates1989/flutter_engaige_meal_tracker_demo/releases)
 
 ## Deployed WebApp
 
