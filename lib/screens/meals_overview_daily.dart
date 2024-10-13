@@ -11,6 +11,7 @@ import 'package:engaige_meal_tracker_demo/providers/ui_readiness_provider.dart';
 import 'package:engaige_meal_tracker_demo/providers/data_provider.dart';
 import 'package:engaige_meal_tracker_demo/utils/custom_app_bar.dart';
 import 'package:engaige_meal_tracker_demo/widgets/dialogs/loading_dialog.dart';
+import 'package:engaige_meal_tracker_demo/widgets/meal_progress_bar.dart';
 import 'package:engaige_meal_tracker_demo/widgets/meal_type_item.dart';
 import 'package:engaige_meal_tracker_demo/widgets/scroll_to_top_fab.dart';
 
@@ -114,12 +115,20 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
       );
     }
 
+
+    // Calculate the number of added meals
+    int addedMeals = mealsOfDay?.length ?? 0;
+    int totalMeals = mealTypes!.length;
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          MealProgressBar(
+            totalMeals: totalMeals,
+            addedMeals: addedMeals,
+          ),
           const SizedBox(height: 35),
-          // Spacer at the top
           ListView.builder(
             shrinkWrap: true,
             // Ensures ListView takes up only the necessary space

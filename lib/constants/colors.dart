@@ -22,6 +22,10 @@ const kColors_appBar_bottomDividerColor = Color(0xFFDDDDDD);
 /// Meal Type item colors.
 const kColors_mealTypeItem_iconColors = kColors_primary;
 
+/// Meal progress bar colors.
+const kColors_mealProgressBar_backgroundColor = Colors.white;
+const kColors_mealProgressBar_fillColor = kColors_primary;
+
 /// LanguageSwitcher colors.
 const kColors_languageSwitcher_dropDownIconColor = kColors_primary;
 
