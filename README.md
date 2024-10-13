@@ -14,8 +14,8 @@ A Flutter app that allows users to track meal parameters (Fat and Sugar levels) 
 4. [Setup Guide](#setup-guide)
    - [Installation](#installation)
       - [Build Web App](#building-the-web-app)
-      - [Android Setup](#android-setup)
-      - [iOS Setup](#ios-setup)
+      - [Android Setup](docs/guides/README_Debug_Android_Flutter.md)
+      - [iOS Setup](docs/guides/README_Debug_iOS_Flutter.md)
 5. [Running the App](#running-the-app)
 6. [Webapp](#deployed-webapp)
 7. [Documentation](#documentation)
@@ -99,39 +99,14 @@ To build the web version of the app, use the following command:
 flutter build web --release --web-renderer html --target lib/main.dart
 ```
 
+
 #### Android Setup
 
-```bash
-flutter run
-```
+For Android setup instructions, refer to the [Android Setup Guide](docs/guides/README_Debug_Android_Flutter.md).
 
 #### iOS Setup
 
-1. Open the project in Xcode by navigating to `ios/Runner.xcworkspace`.
-2. Ensure that the iOS deployment target is set to at least **12.0** in the Xcode settings.
-3. Add the following code in `ios/Runner/Info.plist` to enable localization:
-
-```xml
-<key>CFBundleLocalizations</key>
-<array>
-    <string>en</string>
-    <string>de</string>
-</array>
-```
-
-4. Install CocoaPods dependencies by running:
-
-```bash
-cd ios
-pod install
-cd ..
-```
-
-5. Run the project in Xcode or using the command line:
-
-```bash
-flutter run
-```
+For iOS setup instructions, refer to the [iOS Setup Guide](docs/guides/README_Debug_iOS_Flutter.md).
 
 ## Running the App
 
