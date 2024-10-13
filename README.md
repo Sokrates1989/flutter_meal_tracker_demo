@@ -7,21 +7,22 @@ A Flutter app that allows users to track meal parameters (Fat and Sugar levels) 
 1. [Features](#features)
 2. [Database Schema](#database-schema)
 3. [Plugins Used](#plugins-used)
-    - [SQLite](#sqlite)
-    - [Flutter Login Plugin](#flutter-login-plugin)
-    - [Easy Localization](#easy-localization)
-    - [Provider](#provider)
+   - [SQLite](#sqlite)
+   - [Flutter Login Plugin](#flutter-login-plugin)
+   - [Easy Localization](#easy-localization)
+   - [Provider](#provider)
 4. [Setup Guide](#setup-guide)
-    - [Installation](#installation)
-        - [Build Web App](#build-the-web-app)
-        - [Build Android Release](#build-android-release)
-        - [Android Setup](docs/guides/README_Debug_Android_Flutter.md)
-        - [iOS Setup](docs/guides/README_Debug_iOS_Flutter.md)
+   - [Installation](#installation)
+      - [Build Web App](#build-the-web-app)
+      - [Build Android Release](#build-android-release)
+      - [Android Setup](docs/guides/README_Debug_Android_Flutter.md)
+      - [iOS Setup](docs/guides/README_Debug_iOS_Flutter.md)
 5. [Running the App](#running-the-app)
 6. [Download APK](#download-apk)
-7. [Webapp](#deployed-webapp)
-8. [Documentation](#documentation)
-9. [License](#license)
+7. [Next Steps](#next-steps)
+8. [Webapp](#deployed-webapp)
+9. [Documentation](#documentation)
+10. [License](#license)
 
 ## Features
 
@@ -134,6 +135,13 @@ For additional build commands, such as building APKs for Android or iOS builds, 
 You can download the latest release of the Flutter Meal Tracker App from the link below:
 
 [Download the Release APK](https://github.com/Sokrates1989/flutter_engaige_meal_tracker_demo/releases)
+
+## Next Steps
+
+There are several potential enhancements for the Flutter Meal Tracker App:
+
+- **Sync Mechanism for Local and Online Databases**: Currently, the app stores data in separate local and online databases. A sync mechanism could be implemented to allow offline usage while still benefiting from the advantages of an online database. This would enable users to seamlessly transition between offline and online usage.
+- **Opt-Out of Online Usage**: For users who prioritize security and privacy, an option to fully opt out of online usage could be provided. This would ensure that no user data is transmitted or stored online, promoting security and data protection.
 
 ## Deployed WebApp
 
