@@ -85,6 +85,16 @@ class _WelcomeScreenState extends State<WelcomeScreen>
         onSignup: (signupData) => AuthService(context).signupUser(
             signupData, _isRememberUserAndPasswordEnabled),
         hideForgotPasswordButton: true,
+        messages: LoginMessages(
+          userHint: tr('Username'),
+          passwordHint: tr('Password'),
+          confirmPasswordHint: tr('Confirm Password'),
+          loginButton: tr('LOGIN'),
+          signupButton: tr('SIGNUP'),
+          // providersTitleFirst: tr('or login with'),
+          providersTitleFirst: tr('or view Demo'),
+          // providersTitleSecond: tr('or view Demo'),
+        ),
         savedEmail: _savedUserName!,
         savedPassword: _savedPassword!,
         passwordValidator: _passwordValidator,
