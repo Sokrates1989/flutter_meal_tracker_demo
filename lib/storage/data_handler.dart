@@ -1,3 +1,9 @@
+// Copyright (C) 2024 Patrick Michiels
+// All rights reserved.
+// This source code is licensed under the Evaluation License Agreement and
+// may not be used, modified, or distributed without explicit permission from the author.
+// This code is provided for evaluation purposes only.
+
 import 'package:engaige_meal_tracker_demo/storage/api_connector.dart';
 import 'package:engaige_meal_tracker_demo/storage/database_wrapper.dart';
 import 'package:engaige_meal_tracker_demo/storage/data_handler_repo/data_handler_user_repo.dart';

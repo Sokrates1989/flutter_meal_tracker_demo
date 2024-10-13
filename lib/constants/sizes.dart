@@ -1,3 +1,9 @@
+// Copyright (C) 2024 Patrick Michiels
+// All rights reserved.
+// This source code is licensed under the Evaluation License Agreement and
+// may not be used, modified, or distributed without explicit permission from the author.
+// This code is provided for evaluation purposes only.
+
 /// Maximum width for widgets in the layout, used to constrain the size of widgets to improve UI consistency.
 const double kSizes_minScreenWidth = 300;
 const double kSizes_maxWidgetWidth = 800;

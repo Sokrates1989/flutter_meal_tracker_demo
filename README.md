@@ -1,35 +1,89 @@
 
 # Flutter Meal Tracker App
 
-A Flutter app that allows users to track meal parameters (Fat and Sugar levels) for Breakfast, Lunch, Dinner, and Snacks. The app uses Easy Localization for language support and integrates a login screen for user authentication.
+A Flutter app that allows users to track meal parameters (Fat and Sugar levels) for Breakfast, Lunch, Dinner, and Snacks. Users can select Low, Medium, or High for each parameter and store the entries in a local SQLite database. The app uses Easy Localization for language support and Provider for state management. Additionally, it includes a login screen for user authentication.
 
 ## Table of Contents
 1. [Features](#features)
-2. [Plugins Used](#plugins-used)
-   - [Flutter Login Plugin](#flutter-login-plugin)
-   - [Easy Localization](#easy-localization)
-3. [Setup Guide](#setup-guide)
-   - [Installation](#installation)
-      - [Build Web App](#building-the-web-app)
-      - [Android Setup](#android-setup)
-      - [iOS Setup](#ios-setup)
-   - [Configuration](#configuration)
-4. [Running the App](#running-the-app)
+2. [Database Schema](#database-schema)
+3. [Plugins Used](#plugins-used)
+    - [SQLite](#sqlite)
+    - [Flutter Login Plugin](#flutter-login-plugin)
+    - [Easy Localization](#easy-localization)
+    - [Provider](#provider)
+4. [Setup Guide](#setup-guide)
+    - [Installation](#installation)
+        - [Build Web App](#building-the-web-app)
+        - [Android Setup](#android-setup)
+        - [iOS Setup](#ios-setup)
+5. [Running the App](#running-the-app)
+6.[Licence](#license)
 
 ## Features
 
-- Track meal data for Breakfast, Lunch, Dinner, and Snacks.
-- Store fat and sugar levels for each meal.
-- User authentication with login screen.
+- Track meal parameters for Breakfast, Lunch, Dinner, and Snacks.
+- Each meal type has selectable Fat and Sugar levels (Low, Medium, High).
+- Save and retrieve meal data using a local SQLite database.
+- User authentication with a login screen.
 - Multi-language support using Easy Localization.
+- State management using Provider.
+- Simple, user-friendly UI.
+
+## Database Schema
+![Database Schema](docs/images/database_scheme.png)
+
+### SQL Representation of the Database
+
+```sql
+-- SQL commands for creating tables
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE meal_types (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE meals (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fat_level TEXT NOT NULL,
+    sugar_level TEXT NOT NULL
+);
+
+CREATE TABLE day_meals (
+    day DATE NOT NULL,
+    meal_type_id INTEGER,
+    meal_id INTEGER,
+    PRIMARY KEY (day, meal_type_id),
+    FOREIGN KEY (meal_type_id) REFERENCES meal_types(id),
+    FOREIGN KEY (meal_id) REFERENCES meals(id)
+);
+```
+
+### Tables
+
+- `users`: Stores user information (no encryption used for names).
+- `meal_types`: Contains meal types (Breakfast, Lunch, Dinner, Snacks).
+- `meals`: Stores the fat and sugar level for each meal.
+- `day_meals`: Connects a day to its respective meals.
+
+The app uses a composite primary key in `day_meals` to uniquely identify meals for each day and meal type.
 
 ## Plugins Used
+
+### SQLite
+The app uses [SQLite](https://pub.dev/packages/sqflite) to locally store meal data. All meal entries (Fat and Sugar levels) are saved and retrieved from this local database, ensuring offline functionality.
 
 ### Flutter Login Plugin
 The app uses the [Flutter Login Plugin](https://pub.dev/packages/flutter_login) to handle user authentication. This plugin simplifies the process of adding a login screen with built-in form validation and animations.
 
 ### Easy Localization
-[Easy Localization](https://pub.dev/packages/easy_localization) is used to manage localization and language support in the app. All user-facing texts are stored in JSON files and can be easily extended for multiple languages.
+[Easy Localization](https://pub.dev/packages/easy_localization) is used for multi-language support. All user-facing texts are stored in JSON files and can be easily extended for multiple languages.
+
+### Provider
+[Provider](https://pub.dev/packages/provider) is used for state management, allowing efficient handling of state across the app, especially for user interactions with meal data.
 
 ## Setup Guide
 
@@ -44,31 +98,6 @@ flutter build web --release --web-renderer html --target lib/main.dart
 ```
 
 #### Android Setup
-
-1. Open the project in Android Studio.
-2. Navigate to `android/app/build.gradle` and ensure the `minSdkVersion` is set to at least **21**:
-
-```gradle
-   defaultConfig {
-       minSdkVersion 21
-   }
-```
-3. Add the following lines to `android/app/src/main/AndroidManifest.xml` under the `<application>` tag for localization support:
-
-```xml
-<application
-    android:name="io.flutter.app.FlutterApplication"
-    android:label="Meal Tracker"
-    android:usesCleartextTraffic="true"
-    android:icon="@mipmap/ic_launcher">
-    <!-- Localization configuration -->
-    <meta-data
-        android:name="flutterEmbedding"
-        android:value="2" />
-</application>
-```
-
-4. Run the project in Android Studio or using the command line:
 
 ```bash
 flutter run
@@ -102,36 +131,6 @@ cd ..
 flutter run
 ```
 
-### Configuration
-
-To set up the localization files, create your language JSON files in the following directory:
-
-```
-assets/
-└── lang/
-    ├── en.json
-    └── de.json
-```
-
-Example `en.json`:
-
-```json
-{
-  "Meal Tracker": "Meal Tracker",
-  "Login": "Login",
-  "Fat Level": "Fat Level",
-  "Sugar Level": "Sugar Level"
-}
-```
-
-Update your `pubspec.yaml` to include the localization files:
-
-```yaml
-flutter:
-  assets:
-    - assets/lang/
-```
-
 ## Running the App
 
 Once you've completed the setup, you can run the app using the following command:
@@ -141,3 +140,14 @@ flutter run
 ```
 
 For additional build commands, such as building APKs for Android or iOS builds, refer to the Flutter documentation.
+
+---
+
+By integrating the local database and state management as described, the app offers seamless meal tracking functionality. This README should help guide developers through setting up and running the Flutter Meal Tracker App.
+
+
+## License
+
+This software is provided under an **Evaluation License Agreement**. It may only be used for evaluation purposes and cannot be modified, copied, or distributed without the express permission of the author.
+
+For full details, please refer to the [LICENSE](./LICENSE) file.

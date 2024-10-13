@@ -1,3 +1,9 @@
+// Copyright (C) 2024 Patrick Michiels
+// All rights reserved.
+// This source code is licensed under the Evaluation License Agreement and
+// may not be used, modified, or distributed without explicit permission from the author.
+// This code is provided for evaluation purposes only.
+
 import 'package:engaige_meal_tracker_demo/screens/welcome_screen.dart';
 import 'package:engaige_meal_tracker_demo/utils/ui/responsive_design_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
