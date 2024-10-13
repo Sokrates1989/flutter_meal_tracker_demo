@@ -17,8 +17,9 @@ A Flutter app that allows users to track meal parameters (Fat and Sugar levels) 
       - [Android Setup](#android-setup)
       - [iOS Setup](#ios-setup)
 5. [Running the App](#running-the-app)
-6. [Documentation](#documentation)
-7. [License](#license)
+6. [Webapp](#deployed-webapp)
+7. [Documentation](#documentation)
+8. [License](#license)
 
 ## Features
 
@@ -141,6 +142,11 @@ flutter run
 ```
 
 For additional build commands, such as building APKs for Android or iOS builds, refer to the Flutter documentation.
+
+
+## Deployed WebApp
+
+The App has been built as web-app and can be found here: https://engaige.fe-wi.com/
 
 ## Documentation
 
