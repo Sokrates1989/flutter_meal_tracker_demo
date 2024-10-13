@@ -7,21 +7,22 @@ A Flutter app that allows users to track meal parameters (Fat and Sugar levels) 
 1. [Features](#features)
 2. [Database Schema](#database-schema)
 3. [Plugins Used](#plugins-used)
-   - [SQLite](#sqlite)
-   - [Flutter Login Plugin](#flutter-login-plugin)
-   - [Easy Localization](#easy-localization)
-   - [Provider](#provider)
+    - [SQLite](#sqlite)
+    - [Flutter Login Plugin](#flutter-login-plugin)
+    - [Easy Localization](#easy-localization)
+    - [Provider](#provider)
 4. [Setup Guide](#setup-guide)
-   - [Installation](#installation)
-      - [Build Web App](#build-the-web-app)
-      - [Build Android Release](#build-android-release)
-      - [Android Setup](docs/guides/README_Debug_Android_Flutter.md)
-      - [iOS Setup](docs/guides/README_Debug_iOS_Flutter.md)
+    - [Installation](#installation)
+        - [Build Web App](#build-the-web-app)
+        - [Build Android Release](#build-android-release)
+        - [Android Setup](docs/guides/README_Debug_Android_Flutter.md)
+        - [iOS Setup](docs/guides/README_Debug_iOS_Flutter.md)
 5. [Running the App](#running-the-app)
 6. [Download APK](#download-apk)
 7. [Next Steps](#next-steps)
 8. [Webapp](#deployed-webapp)
 9. [Documentation](#documentation)
+    - [Generating App Documentation](#generating-app-documentation)
 10. [License](#license)
 
 ## Features
@@ -152,6 +153,18 @@ The App has been built as web-app and can be found here: https://engaige.fe-wi.c
 
 - The zipped documentation for the project can be found at [docs/doku.zip](docs/doku.zip).
 - An online version of this documentation can be found at https://doku.engaige.fe-wi.com/
+
+### Generating App Documentation
+To generate the project's documentation, you can use the `dart doc` command. This will create documentation for the codebase, including API references and class descriptions.
+
+```bash
+dart doc
+```
+
+The generated documentation will be located in the `doc/api/` directory. You can open the `index.html` file in a web browser to view the full API documentation.
+
+For more information about Dart documentation generation, refer to the [Dart doc guide](https://dart.dev/tools/dart-doc).
+
 
 ## License
 
