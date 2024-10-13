@@ -4,15 +4,19 @@ import 'package:flutter/material.dart';
 
 // Custom package imports.
 import 'package:engaige_meal_tracker_demo/constants/colors.dart';
+import 'package:engaige_meal_tracker_demo/constants/sizes.dart';
+import 'package:engaige_meal_tracker_demo/utils/ui/responsive_design_utils.dart';
 
 class MealProgressBar extends StatelessWidget {
   final int totalMeals;
   final int addedMeals;
+  final double currentScreenWidth;
 
   const MealProgressBar({
     Key? key,
     required this.totalMeals,
     required this.addedMeals,
+    required this.currentScreenWidth,
   }) : super(key: key);
 
   @override
@@ -21,7 +25,14 @@ class MealProgressBar extends StatelessWidget {
     double progress = addedMeals / totalMeals;
 
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.symmetric(
+        vertical: 16.0,
+        horizontal: ResponsiveDesignUtils.getOptimalHorizontalPadding(
+          minPadding: 8.0,
+          currentScreenWidth: currentScreenWidth,
+          maxWidgetWidthOverwrite: kSizes_progressBar_maxWidth,
+        ),
+      ),
       child: Column(
         children: [
           Row(

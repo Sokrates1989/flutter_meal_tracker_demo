@@ -111,13 +111,15 @@ class ResponsiveDesignUtils {
   static double getOptimalHorizontalPadding({
     required double minPadding,
     required double currentScreenWidth,
+    double? maxWidgetWidthOverwrite,
   }) {
     double optimalPadding = minPadding;
-    double maxAllowedWidth = kSizes_maxWidgetWidth + (minPadding * 2);
+    double maxWidgetWidthWithoutPadding = maxWidgetWidthOverwrite ?? kSizes_maxWidgetWidth;
+    double maxAllowedWidth = maxWidgetWidthWithoutPadding + (minPadding * 2);
 
     // Adjust the padding to center the content if the screen exceeds the maximum allowed width.
     if (currentScreenWidth > maxAllowedWidth) {
-      optimalPadding = (currentScreenWidth - kSizes_maxWidgetWidth) / 2;
+      optimalPadding = (currentScreenWidth - maxWidgetWidthWithoutPadding) / 2;
     }
 
     return optimalPadding;

@@ -127,6 +127,7 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
           MealProgressBar(
             totalMeals: totalMeals,
             addedMeals: addedMeals,
+            currentScreenWidth: screenWidth,
           ),
           const SizedBox(height: 35),
           ListView.builder(
