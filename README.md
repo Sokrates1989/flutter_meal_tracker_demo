@@ -7,17 +7,18 @@ A Flutter app that allows users to track meal parameters (Fat and Sugar levels) 
 1. [Features](#features)
 2. [Database Schema](#database-schema)
 3. [Plugins Used](#plugins-used)
-    - [SQLite](#sqlite)
-    - [Flutter Login Plugin](#flutter-login-plugin)
-    - [Easy Localization](#easy-localization)
-    - [Provider](#provider)
+   - [SQLite](#sqlite)
+   - [Flutter Login Plugin](#flutter-login-plugin)
+   - [Easy Localization](#easy-localization)
+   - [Provider](#provider)
 4. [Setup Guide](#setup-guide)
-    - [Installation](#installation)
-        - [Build Web App](#building-the-web-app)
-        - [Android Setup](#android-setup)
-        - [iOS Setup](#ios-setup)
+   - [Installation](#installation)
+      - [Build Web App](#building-the-web-app)
+      - [Android Setup](#android-setup)
+      - [iOS Setup](#ios-setup)
 5. [Running the App](#running-the-app)
-6.[Licence](#license)
+6. [Documentation](#documentation)
+7. [License](#license)
 
 ## Features
 
@@ -141,10 +142,10 @@ flutter run
 
 For additional build commands, such as building APKs for Android or iOS builds, refer to the Flutter documentation.
 
----
+## Documentation
 
-By integrating the local database and state management as described, the app offers seamless meal tracking functionality. This README should help guide developers through setting up and running the Flutter Meal Tracker App.
-
+- The zipped documentation for the project can be found at [docs/doku.zip](docs/doku.zip).
+- An online version of this documentation can be found at https://doku.engaige.fe-wi.com/
 
 ## License
 
