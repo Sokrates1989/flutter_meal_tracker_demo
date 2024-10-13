@@ -61,23 +61,71 @@ class DatabaseWrapper {
 
     // Open the database and store the reference.
     database = await openDatabase(
-      // Set the path to the database.
-      path.join(await getDatabasesPath(), 'engaige_meal_tracker_demo_debug_1.db'),
-      // Define the database creation logic.
+      path.join(await getDatabasesPath(), 'engaige_meal_tracker_demo.db'),
       onCreate: (db, version) async {
-        await db.execute(
-          'CREATE TABLE users (ID BIGINT PRIMARY KEY, userName TEXT NOT NULL, hashedPassword TEXT NOT NULL)',
-        );
+        // Create the users table
+        await db.execute('''
+          CREATE TABLE users (
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            hashedPassword TEXT NULL
+          )
+        ''');
+
+        // Insert the demo user directly into the database
+        await db.insert('users', {
+          'name': 'DemoUser123',
+          'hashedPassword': '3c110c5edaf304f6ac0a678bd9766709e8654f1713bd2f6fac94f95873bd77f9a591cb9349c4f9e944a44e1ab30812e66c3f6bf6e3c566fcd4055c65de9a1245'
+        });
+
+        // Create the days table
+        await db.execute('''
+          CREATE TABLE days (
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            year INT NOT NULL,
+            month INT NOT NULL,
+            day INT NOT NULL
+          )
+        ''');
+
+        // Create the meal_types table
+        await db.execute('''
+          CREATE TABLE meal_types (
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL
+          )
+        ''');
+
+        // Insert predefined meal types (breakfast, lunch, dinner, snacks)
+        await db.insert('meal_types', {'name': 'breakfast'});
+        await db.insert('meal_types', {'name': 'lunch'});
+        await db.insert('meal_types', {'name': 'dinner'});
+        await db.insert('meal_types', {'name': 'snacks'});
+
+        // Create the meals table
+        await db.execute('''
+          CREATE TABLE meals (
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            fat_level INT NOT NULL,
+            sugar_level INT NOT NULL
+          )
+        ''');
+
+        // Create the day_meals table with composite primary key
+        await db.execute('''
+          CREATE TABLE day_meals (
+            fk_user_id INTEGER NOT NULL,
+            fk_day_id INTEGER NOT NULL,
+            fk_meal_type_id INTEGER NOT NULL,
+            fk_meal_id INTEGER NOT NULL,
+            PRIMARY KEY (fk_user_id, fk_day_id, fk_meal_type_id),
+            FOREIGN KEY (fk_user_id) REFERENCES users(ID) ON DELETE CASCADE,
+            FOREIGN KEY (fk_day_id) REFERENCES days(ID) ON DELETE CASCADE,
+            FOREIGN KEY (fk_meal_type_id) REFERENCES meal_types(ID) ON DELETE CASCADE,
+            FOREIGN KEY (fk_meal_id) REFERENCES meals(ID) ON DELETE CASCADE
+          )
+        ''');
       },
-      // Handle database upgrades.
-      onUpgrade: (db, oldVersion, newVersion) async {
-        var batch = db.batch();
-        if (oldVersion == 1 && newVersion == 2) {
-          // Example: future schema changes for version 2.
-        }
-        await batch.commit();
-      },
-      // Set the database version.
       version: 1,
     );
 

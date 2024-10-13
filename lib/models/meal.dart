@@ -39,15 +39,28 @@ class Meal {
     required this.sugarLevel,
   });
 
-  /// Constructs a [Meal] instance from a [Map].
-  ///
-  /// Expects the map to contain keys for 'year', 'month', 'day', 'mealType', 'fatLevel', and 'sugarLevel'.
+  /// Constructs a [Meal] instance from a [Map] for API use.
   static Meal fromMap(Map<String, dynamic> map) {
     return Meal(
       year: map['year'],
       month: map['month'],
       day: map['day'],
       mealType: map['mealType'],
+      fatLevel: map['fat_level'],
+      sugarLevel: map['sugar_level'],
+    );
+  }
+
+  /// Constructs a [Meal] instance from a [Map] for local DB use.
+  ///
+  /// This version expects the map to contain keys 'fat_level', 'sugar_level', and 'name' (for mealType).
+  /// The year, month, and day are handled separately via arguments (since they're likely coming from a joined query).
+  static Meal fromLocalDBMap(Map<String, dynamic> map, int year, int month, int day) {
+    return Meal(
+      year: year,
+      month: month,
+      day: day,
+      mealType: map['name'], // meal type name from local DB
       fatLevel: map['fat_level'],
       sugarLevel: map['sugar_level'],
     );

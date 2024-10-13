@@ -42,6 +42,6 @@ class DataHandler {
   /// Returns an instance of [DataHandlerMealRepo] that allows access to
   /// meal-specific repository operations.
   DataHandlerMealRepo getMealRepo() {
-    return DataHandlerMealRepo(_apiConnector);
+    return DataHandlerMealRepo(_apiConnector, _databaseWrapper);
   }
 }
