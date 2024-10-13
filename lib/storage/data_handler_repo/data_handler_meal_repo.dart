@@ -91,4 +91,15 @@ class DataHandlerMealRepo {
     // Return the success status of the API call.
     return apiResponse.success;
   }
+
+  /// Deletes an existing meal from the database via the API.
+  ///
+  /// This method sends the meal details (year, month, day, mealType) to the API to be deleted.
+  /// It returns `true` if the operation was successful, otherwise `false`.
+  Future<bool> deleteMeal({required Meal meal, required User user}) async {
+    final ApiReturn apiResponse = await _apiConnector.getMealRepo().deleteMeal(meal: meal, user: user);
+
+    return apiResponse.success;
+  }
+
 }

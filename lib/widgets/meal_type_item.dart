@@ -13,6 +13,7 @@ class MealTypeItem extends StatelessWidget {
   final double currentScreenWidth;
   final Function onEditMeal; // Function to handle meal edit
   final Function onAddMeal; // Function to handle meal addition
+  final Function onDeleteMeal; // Function to handle meal addition
 
   const MealTypeItem({
     super.key,
@@ -21,6 +22,7 @@ class MealTypeItem extends StatelessWidget {
     required this.currentScreenWidth,
     required this.onEditMeal,
     required this.onAddMeal,
+    required this.onDeleteMeal,
   });
 
   @override
@@ -96,19 +98,33 @@ class MealTypeItem extends StatelessWidget {
   /// Builds the action button (Add or Edit) depending on whether a meal exists.
   Widget _buildActionButton() {
     if (meal != null) {
-      return IconButton(
-        icon: const Icon(Icons.edit),
-        iconSize: 30.0,
-        color: kColors_mealTypeItem_addIconColor,
-        onPressed: () {
-          onEditMeal(); // Trigger edit action
-        },
+      return Row(
+        mainAxisSize: MainAxisSize.min,  // Ensures the row only takes up the space it needs
+        children: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            iconSize: 30.0,
+            color: kColors_mealTypeItem_iconColors,
+            onPressed: () {
+              onEditMeal(); // Trigger edit action
+            },
+          ),
+          const SizedBox(width: 8.0),  // Space between edit and delete icons
+          IconButton(
+            icon: const Icon(Icons.delete),
+            iconSize: 30.0,
+            color: kColors_mealTypeItem_iconColors,  // You can change this color to fit your theme
+            onPressed: () {
+              onDeleteMeal(); // Trigger delete action
+            },
+          ),
+        ],
       );
     } else {
       return IconButton(
         icon: const Icon(Icons.add_box),
         iconSize: 30.0,
-        color: kColors_mealTypeItem_addIconColor,
+        color: kColors_mealTypeItem_iconColors,
         onPressed: () {
           onAddMeal(); // Trigger add action
         },

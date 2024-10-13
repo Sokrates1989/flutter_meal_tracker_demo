@@ -249,4 +249,62 @@ class ApiMealRepo {
       );
     }
   }
+
+  /// Deletes an existing meal from the backend via the API.
+  ///
+  /// This method sends a POST request to delete an existing meal from the database.
+  /// It constructs a request body containing the meal details and credentials required for the operation.
+  ///
+  /// Returns an [ApiReturn] containing the result of the operation.
+  Future<ApiReturn> deleteMeal({required Meal meal, required User user}) async {
+    final String apiEndpointUrl = '$_baseUrl/v1/deleteMeal';
+
+    // Constructing the request body with meal details and credentials.
+    final deleteMealItemMap = {
+      'credentials': _apiConnector.getCredentialsItemMap(userName: user.userName, hashedPassword: user.hashedPassword!),
+      'year': meal.year,
+      'month': meal.month,
+      'day': meal.day,
+      'mealType': meal.mealType,
+    };
+
+    final body = json.encode(deleteMealItemMap);
+
+    try {
+      // Sending the POST request to delete the meal.
+      final response = await http.post(
+        Uri.parse(apiEndpointUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+
+      // Handling successful response with status code 200.
+      if (response.statusCode == 200) {
+        return ApiReturn(
+          success: true,
+          returnCode: 200,
+          explanation: 'Successfully deleted meal',
+        );
+      } else {
+        // Print and return the response in case of a non-200 status.
+        _apiConnector.printHttpResponse(response);
+        return ApiReturn(
+          success: false,
+          returnCode: response.statusCode,
+          explanation: '${response.reasonPhrase} ${response.body}',
+        );
+      }
+    } catch (e) {
+      // Handling any errors that occur during the request.
+      return ApiReturn(
+        success: false,
+        returnCode: 599,
+        explanation: e.toString(),
+      );
+    }
+  }
+
+
+
+
 }

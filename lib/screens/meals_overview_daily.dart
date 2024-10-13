@@ -10,6 +10,7 @@ import 'package:engaige_meal_tracker_demo/models/meal.dart';
 import 'package:engaige_meal_tracker_demo/providers/ui_readiness_provider.dart';
 import 'package:engaige_meal_tracker_demo/providers/data_provider.dart';
 import 'package:engaige_meal_tracker_demo/utils/custom_app_bar.dart';
+import 'package:engaige_meal_tracker_demo/widgets/dialogs/loading_dialog.dart';
 import 'package:engaige_meal_tracker_demo/widgets/meal_type_item.dart';
 import 'package:engaige_meal_tracker_demo/widgets/scroll_to_top_fab.dart';
 
@@ -117,25 +118,21 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 35), // Spacer at the top
+          const SizedBox(height: 35),
+          // Spacer at the top
           ListView.builder(
-            shrinkWrap: true, // Ensures ListView takes up only the necessary space
-            physics: NeverScrollableScrollPhysics(), // Disables internal scrolling
+            shrinkWrap: true,
+            // Ensures ListView takes up only the necessary space
+            physics: NeverScrollableScrollPhysics(),
+            // Disables internal scrolling
             itemCount: mealTypes!.length,
             itemBuilder: (context, index) {
               String mealType = mealTypes![index];
               return MealTypeItem(
                 mealType: mealType,
-                meal: getCorrespondingMeal(mealsOfDay: mealsOfDay, mealType: mealType),
+                meal: getCorrespondingMeal(
+                    mealsOfDay: mealsOfDay, mealType: mealType),
                 currentScreenWidth: screenWidth,
-                onEditMeal: () {
-                  _showAddEditMealDialog(
-                    context: context,
-                    mealType: mealType,
-                    isEdit: true,
-                    meal: getCorrespondingMeal(mealsOfDay: mealsOfDay, mealType: mealType),
-                  );
-                },
                 onAddMeal: () {
                   _showAddEditMealDialog(
                     context: context,
@@ -144,16 +141,32 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
                     meal: null,
                   );
                 },
+                onEditMeal: () {
+                  _showAddEditMealDialog(
+                    context: context,
+                    mealType: mealType,
+                    isEdit: true,
+                    meal: getCorrespondingMeal(
+                        mealsOfDay: mealsOfDay, mealType: mealType),
+                  );
+                },
+                onDeleteMeal: () {
+                  setState(() {
+                    // Find and remove the meal from mealsOfDay
+                    mealsOfDay!.removeWhere((meal) => meal.mealType == mealType);
+                  });
+                },
               );
             },
           ),
-          const SizedBox(height: 20), // Add spacing between the list and the buttons
-          if (haveMealsChanged()) _buildSaveCancelButtons(), // Conditionally show buttons
+          const SizedBox(height: 20),
+          // Add spacing between the list and the buttons
+          if (haveMealsChanged()) _buildSaveCancelButtons(),
+          // Conditionally show buttons
         ],
       ),
     );
   }
-
 
   Widget _buildSaveCancelButtons() {
     return Padding(
@@ -206,14 +219,21 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
 
 
   void _saveChanges() async {
-    final dataProvider = Provider.of<DataProvider>(context, listen: false);
-    final mealRepo = dataProvider.dataHandler.getMealRepo();
+    // Instantiate the LoadingDialog
+    LoadingDialog loadingDialog = LoadingDialog(buildContext: context);
 
-    // Lists to store meals that need to be added or edited
+    // Show the loading dialog before starting the API operations
+    loadingDialog.showLoadingDialog();
+
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
+    final dataHandlerMealRepo = dataProvider.dataHandler.getMealRepo();
+
+    // Lists to store meals that need to be added, edited, or deleted
     List<Meal> mealsToAdd = [];
     List<Meal> mealsToEdit = [];
+    List<Meal> mealsToDelete = [];
 
-    // Compare mealsOfDay with initialMealsOfDay
+    // Compare mealsOfDay with initialMealsOfDay for additions and edits
     for (Meal meal in mealsOfDay!) {
       final correspondingInitialMeal = initialMealsOfDay!.firstWhere(
             (initialMeal) => initialMeal.mealType == meal.mealType,
@@ -236,9 +256,29 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
       }
     }
 
+    // Identify meals to delete (present in initialMealsOfDay but not in mealsOfDay)
+    for (Meal initialMeal in initialMealsOfDay!) {
+      final correspondingCurrentMeal = mealsOfDay!.firstWhere(
+            (currentMeal) => currentMeal.mealType == initialMeal.mealType,
+        orElse: () => Meal(
+          year: initialMeal.year,
+          month: initialMeal.month,
+          day: initialMeal.day,
+          mealType: "",
+          fatLevel: -1,
+          sugarLevel: -1,
+        ),
+      );
+
+      // If the meal is not found in mealsOfDay, it needs to be deleted
+      if (correspondingCurrentMeal.mealType == "") {
+        mealsToDelete.add(initialMeal);
+      }
+    }
+
     // Handle adding new meals
     for (Meal newMeal in mealsToAdd) {
-      bool success = await mealRepo.addMeal(meal: newMeal, user: user);
+      bool success = await dataHandlerMealRepo.addMeal(meal: newMeal, user: user);
       if (!success) {
         // Handle failure to add meal (e.g., show an error message)
         print("Failed to add meal: ${newMeal.mealType}");
@@ -247,28 +287,41 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
 
     // Handle editing existing meals
     for (Meal updatedMeal in mealsToEdit) {
-      bool success = await mealRepo.editMeal(meal: updatedMeal, user: user);
+      bool success = await dataHandlerMealRepo.editMeal(meal: updatedMeal, user: user);
       if (!success) {
         // Handle failure to edit meal (e.g., show an error message)
         print("Failed to edit meal: ${updatedMeal.mealType}");
       }
     }
 
+    // Handle deleting meals
+    for (Meal mealToDelete in mealsToDelete) {
+      bool success = await dataHandlerMealRepo.deleteMeal(meal: mealToDelete, user: user);
+      if (!success) {
+        // Handle failure to delete meal (e.g., show an error message)
+        print("Failed to delete meal: ${mealToDelete.mealType}");
+      }
+    }
+
     // Update the initialMealsOfDay to reflect the current state
     setState(() {
-      initialMealsOfDay = List.from(mealsOfDay!.map((meal) => Meal.fromMap(meal.toMap())));
+      initialMealsOfDay =
+          List.from(mealsOfDay!.map((meal) => Meal.fromMap(meal.toMap())));
     });
+
+    // Close the loading dialog once all operations are complete
+    loadingDialog.closeLoadingDialog();
   }
+
 
 
   void _cancelChanges() {
     setState(() {
       // Cancel changes logic - revert mealsOfDay to the initial state
-      mealsOfDay = List.from(initialMealsOfDay!.map((meal) => Meal.fromMap(meal.toMap())));
+      mealsOfDay = List.from(
+          initialMealsOfDay!.map((meal) => Meal.fromMap(meal.toMap())));
     });
   }
-
-
 
   /// Fetches the necessary data to populate the screen.
   ///
@@ -296,8 +349,8 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
         await dataProvider.dataHandler.getMealRepo().getMeals(user: user);
 
     // Store a deep copy of mealsOfDay in initialMealsOfDay
-    initialMealsOfDay = List.from(mealsOfDay!.map((meal) => Meal.fromMap(meal.toMap())));
-
+    initialMealsOfDay =
+        List.from(mealsOfDay!.map((meal) => Meal.fromMap(meal.toMap())));
 
     // Indicate that the screen values are fully loaded.
     uiReadinessProvider.isMealsOverViewDailyScreenReady = true;
@@ -313,7 +366,6 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
     });
   }
 
-
   bool haveMealsChanged() {
     if (mealsOfDay == null || initialMealsOfDay == null) return false;
 
@@ -327,8 +379,6 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
 
     return false;
   }
-
-
 
   Meal? getCorrespondingMeal(
       {required String mealType, required List<Meal>? mealsOfDay}) {
@@ -469,7 +519,6 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
                         IconButton(
                           icon: Icon(Icons.check, color: Colors.green),
                           onPressed: () {
-
                             // Create a new Meal object with the selected values
                             Meal newMeal = Meal(
                               year: DateTime.now().year,
@@ -483,7 +532,8 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
                             setState(() {
                               if (isEdit) {
                                 // Find and replace the existing meal in mealsOfDay
-                                int index = mealsOfDay!.indexWhere((meal) => meal.mealType == mealType);
+                                int index = mealsOfDay!.indexWhere(
+                                    (meal) => meal.mealType == mealType);
                                 if (index != -1) {
                                   mealsOfDay![index] = newMeal;
                                 }
@@ -535,7 +585,6 @@ class _MealsDailyOverviewScreenState extends State<MealsDailyOverviewScreen> {
       ),
     );
   }
-
 
   @override
   void dispose() {

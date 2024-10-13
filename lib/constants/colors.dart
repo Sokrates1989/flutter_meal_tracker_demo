@@ -20,7 +20,7 @@ const kColors_flutterLoginTheme_titleTextColor = Color(0xFFDEE3D9);
 const kColors_appBar_bottomDividerColor = Color(0xFFDDDDDD);
 
 /// Meal Type item colors.
-const kColors_mealTypeItem_addIconColor = kColors_primary;
+const kColors_mealTypeItem_iconColors = kColors_primary;
 
 /// LanguageSwitcher colors.
 const kColors_languageSwitcher_dropDownIconColor = kColors_primary;
