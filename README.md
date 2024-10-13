@@ -10,6 +10,7 @@ A Flutter app that allows users to track meal parameters (Fat and Sugar levels) 
    - [Easy Localization](#easy-localization)
 3. [Setup Guide](#setup-guide)
    - [Installation](#installation)
+      - [Build Web App](#building-the-web-app)
       - [Android Setup](#android-setup)
       - [iOS Setup](#ios-setup)
    - [Configuration](#configuration)
@@ -33,6 +34,14 @@ The app uses the [Flutter Login Plugin](https://pub.dev/packages/flutter_login) 
 ## Setup Guide
 
 ### Installation
+
+#### Building the Web App
+
+To build the web version of the app, use the following command:
+
+```bash
+flutter build web --release --web-renderer html --target lib/main.dart
+```
 
 #### Android Setup
 
