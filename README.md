@@ -1,7 +1,9 @@
 
-# Flutter Meal Tracker App
+# Flutter Meal Tracker App (Demo)
 
-A Flutter app that allows users to track meal parameters (Fat and Sugar levels) for Breakfast, Lunch, Dinner, and Snacks. Users can select Low, Medium, or High for each parameter and store the entries in a local SQLite database. The app uses Easy Localization for language support and Provider for state management. Additionally, it includes a login screen for user authentication.
+This is a **demo application** created to demonstrate coding skills and is not intended for real-world use. 
+
+The app showcases how to build a meal tracking system in Flutter, including features like local database storage, online API connection, user authentication, and state management. Please note that this app is for evaluation purposes only, and no real data or production-ready services are included.
 
 ## Table of Contents
 1. [Features](#features)
