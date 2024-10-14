@@ -1,0 +1,5 @@
+dartdoc:
+  exclude:
+    - lib/constants/authentication.dart
+    - lib/constants/config.dart
+    - lib/constants/

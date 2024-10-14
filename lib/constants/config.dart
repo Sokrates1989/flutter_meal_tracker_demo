@@ -4,4 +4,5 @@
 // may not be used, modified, or distributed without explicit permission from the author.
 // This code is provided for evaluation purposes only.
 
+/// @nodoc
 const kConfig_apiBaseUrl = 'https://meal-tracker-api-demo.engaige.felicitas-wisdom.com';

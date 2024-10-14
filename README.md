@@ -23,6 +23,7 @@ A Flutter app that allows users to track meal parameters (Fat and Sugar levels) 
 8. [Webapp](#deployed-webapp)
 9. [Documentation](#documentation)
     - [Generating App Documentation](#generating-app-documentation)
+    - [Excluding Sensitive Data from Documentation](#excluding-sensitive-data-from-documentation)
 10. [License](#license)
 
 ## Features
@@ -146,13 +147,10 @@ There are several potential enhancements for the Flutter Meal Tracker App:
 - **Opt-Out of Online Usage**: For users who prioritize security and privacy, an option to fully opt out of online usage could be provided. This would ensure that no user data is transmitted or stored online, promoting security and data protection.
 
 ## Deployed WebApp
-
 The App has been built as web-app and can be found here: https://engaige.fe-wi.com/
 
 ## Documentation
-
-- The zipped documentation for the project can be found at [docs/doku.zip](docs/doku.zip).
-- An online version of this documentation can be found at https://doku.engaige.fe-wi.com/
+An online version of this documentation can be found at https://doku.engaige.fe-wi.com/
 
 ### Generating App Documentation
 To generate the project's documentation, you can use the `dart doc` command. This will create documentation for the codebase, including API references and class descriptions.
@@ -164,6 +162,56 @@ dart doc
 The generated documentation will be located in the `doc/api/` directory. You can open the `index.html` file in a web browser to view the full API documentation.
 
 For more information about Dart documentation generation, refer to the [Dart doc guide](https://dart.dev/tools/dart-doc).
+
+
+### Excluding Sensitive Data from Documentation
+
+When generating documentation for your app using `dart doc`, there may be certain files or parts of your codebase that you want to exclude from the public API documentation, such as sensitive constants or authentication tokens.
+
+#### Option 1: Use `@nodoc` Annotation
+
+To exclude specific variables, methods, or classes from the documentation, you can use the `@nodoc` annotation. Adding this annotation to any item will prevent Dartdoc from including it in the generated docs.
+
+For example, if you want to exclude sensitive constants like API tokens:
+
+```dart
+/// @nodoc
+const String kAuthentication_apiToken = 'your-api-token';
+/// @nodoc
+const String kAuthentication_pepper = 'your-pepper';
+```
+
+This approach works at the element level and ensures that any item with `@nodoc` will not be included in the documentation.
+
+#### Option 2: Use `dartdoc_options.yaml`
+
+Alternatively, you can use a `dartdoc_options.yaml` file to exclude entire files or libraries from the documentation. Place this file in the root of your project, and specify the files or directories you want to exclude.
+
+Here’s an example of how to exclude specific files:
+
+```yaml
+dartdoc:
+  exclude:
+    - lib/constants/authentication.dart
+    - lib/constants/config.dart
+```
+
+Make sure that the paths you provide are relative to your project’s root and use POSIX-style paths (with forward slashes `/`).
+
+**Note**: As of now, wildcard exclusion patterns (like `lib/constants/*`) are not supported, so you must list each file you want to exclude individually.
+
+### Verifying the Exclusion
+
+After setting up the `@nodoc` annotations or the `dartdoc_options.yaml`, run the following command to generate your documentation:
+
+```bash
+dart doc
+```
+
+Check the generated documentation (located in the `doc/api/` directory) to ensure that the sensitive items or files are excluded as expected.
+
+For more detailed information on Dartdoc configurations, you can refer to the official [Dartdoc documentation](https://dart.dev/tools/dart-doc).
+
 
 
 ## License
