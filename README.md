@@ -12,7 +12,8 @@ A Flutter app that allows users to track meal parameters (Fat and Sugar levels) 
     - [Easy Localization](#easy-localization)
     - [Provider](#provider)
 4. [Setup Guide](#setup-guide)
-    - [Installation](#installation)
+   - [Configuration](#configuration)
+   - [Installation](#installation)
         - [Build Web App](#build-the-web-app)
         - [Build Android Release](#build-android-release)
         - [Android Setup](docs/guides/README_Debug_Android_Flutter.md)
@@ -93,6 +94,41 @@ The app uses the [Flutter Login Plugin](https://pub.dev/packages/flutter_login) 
 [Provider](https://pub.dev/packages/provider) is used for state management, allowing efficient handling of state across the app, especially for user interactions with meal data.
 
 ## Setup Guide
+
+### Configuration
+
+#### Setting up Configuration and Authentication Files
+
+To run the app properly, you will need to configure the authentication and API settings. The required configuration and authentication files are not included in the repository by default to protect sensitive information.
+
+#### Steps to Set Up:
+1. **Copy Template Files:**
+   - Navigate to the `lib/constants/` directory.
+   - You will find two template files: `authentication.dart.template` and `config.dart.template`.
+
+2. **Create the Required Files:**
+   - Copy these template files and remove the `.template` suffix to create the actual files the app will use.
+     ```bash
+     cp lib/constants/authentication.dart.template lib/constants/authentication.dart
+     cp lib/constants/config.dart.template lib/constants/config.dart
+     ```
+
+3. **Replace Placeholder Values:**
+   - In `authentication.dart`, replace the placeholders with your actual credentials:
+     ```dart
+     const String kAuthentication_apiToken = 'YOUR_API_TOKEN_HERE';
+     const String kAuthentication_pepper = 'YOUR_PEPPER_VALUE_HERE';
+     ```
+   - In `config.dart`, set the correct API base URL:
+     ```dart
+     const String kConfig_apiBaseUrl = 'https://your-api-url.com';
+     ```
+
+4. **Save and Run the App:**
+   - After updating these files with your actual credentials and API settings, you can proceed to run the app as usual.
+
+This step is crucial to ensure the app can communicate with the backend services and handle authentication correctly.
+
 
 ### Installation
 

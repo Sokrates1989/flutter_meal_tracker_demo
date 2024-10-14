@@ -94,3 +94,7 @@ test
 
 # Devtools.
 devtools_options.yaml
+
+# Authentication.
+lib/constants/authentication.dart
+lib/constants/config.dart
