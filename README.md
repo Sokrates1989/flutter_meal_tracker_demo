@@ -204,7 +204,7 @@ There are several potential enhancements for the Flutter Meal Tracker App:
 The App has been built as web-app and can be found here: https://engaige.fe-wi.com/
 
 ## Documentation
-An online version of this documentation can be found at https://doku.engaige.fe-wi.com/
+An online version of the project's internal developer documentation can be found at https://doku.engaige.fe-wi.com/
 
 ### Generating App Documentation
 To generate the project's documentation, you can use the `dart doc` command. This will create documentation for the codebase, including API references and class descriptions.
