@@ -6,6 +6,7 @@ A Flutter app that allows users to track meal parameters (Fat and Sugar levels) 
 ## Table of Contents
 1. [Features](#features)
 2. [Database Schema](#database-schema)
+    - [Database Implementation Highlights](#database-implementation-highlights)
 3. [Plugins Used](#plugins-used)
     - [SQLite](#sqlite)
     - [Flutter Login Plugin](#flutter-login-plugin)
@@ -78,6 +79,23 @@ CREATE TABLE day_meals (
 - `day_meals`: Connects a day to its respective meals.
 
 The app uses a composite primary key in `day_meals` to uniquely identify meals for each day and meal type.
+
+
+## Database Implementation Highlights
+
+### 1. Single Point of Access with DataHandler
+
+The **DataHandler** acts as the single point of access for retrieving data within the app. Whether the data is fetched from the online database through the API or from the local SQLite database, the interface for the developer remains consistent.
+
+- **How it Works**: The `DataHandler` checks if there is a local database available and then decides whether to use the `ApiHandler` (for online data) or the `DatabaseWrapper` (for local data). This abstraction simplifies data retrieval and eliminates the need for the developer to handle multiple data sources directly.
+
+### 2. Separation of Logic into Repos
+
+Both **ApiHandler** and **DatabaseWrapper**, as well as **DataHandler**, separate their logic into specific repositories (repos) for **meal** and **user interactions**.
+
+- **Why This Matters**: By splitting logic into separate repos for meals and users, the codebase remains more maintainable. Each repository focuses on a specific area of logic, making it easier to modify or extend individual pieces of functionality. This design prevents the creation of large, unmanageable files and promotes clean, organized code.
+
+
 
 ## Plugins Used
 
