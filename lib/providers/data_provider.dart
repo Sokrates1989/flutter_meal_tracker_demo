@@ -63,7 +63,7 @@ class DataProvider extends ChangeNotifier {
   /// Marks the user as logged in and stores the `loggedInUser` data.
   ///
   /// - [loggedInUser]: The `User` object representing the logged-in user.
-  Future<void> userHasLoggedIn(User loggedInUser) async {
+  Future<void> setLoggedInUser(User loggedInUser) async {
     _loggedInUser = loggedInUser;
     _userIsLoggedIn = true;
     notifyListeners(); // Notifies listeners that the user login state has changed.
@@ -72,7 +72,7 @@ class DataProvider extends ChangeNotifier {
   /// Logs out the current user and resets the user state.
   ///
   /// This method sets the `_loggedInUser` to `null` and notifies listeners of the state change.
-  void userHasLoggedOut() {
+  void logOutUser() {
     _loggedInUser = null;
     _userIsLoggedIn = false;
     notifyListeners(); // Notifies listeners that the user has logged out.

@@ -67,7 +67,7 @@ class AuthService {
       // If login is successful
       if (loginReturn.success) {
         await Provider.of<DataProvider>(context, listen: false)
-            .userHasLoggedIn(loginReturn.data);
+            .setLoggedInUser(loginReturn.data);
 
         // Save user credentials if `rememberMe` is enabled
         if (rememberMe) {
@@ -93,7 +93,7 @@ class AuthService {
   /// any credentials.
   Future<void> logInDemoUserFlutterLogin() async {
     await Provider.of<DataProvider>(context, listen: false)
-        .userHasLoggedIn(User.getDemoUser());
+        .setLoggedInUser(User.getDemoUser());
   }
 
   /// Registers a new user using the provided signup information.
@@ -130,7 +130,7 @@ class AuthService {
       // If registration is successful
       if (registrationReturn.success) {
         await Provider.of<DataProvider>(context, listen: false)
-            .userHasLoggedIn(registrationReturn.data);
+            .setLoggedInUser(registrationReturn.data);
 
         // Save user credentials if `rememberMe` is enabled
         if (rememberMe) {

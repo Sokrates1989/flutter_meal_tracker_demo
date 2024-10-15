@@ -114,13 +114,11 @@ class _MyAppState extends State<MyApp> {
         /// or their language preference in the app.
         locale: context.locale,
 
-        /// Determines the initial screen to display based on the user's login state.
+        /// Fallback -> Always show Login Screen.
         ///
-        /// - If the user is logged in, the [MealsDailyOverviewScreen] is shown.
-        /// - If no user is logged in, the [WelcomeScreen] is displayed.
-        home: widget.user == null
-            ? const WelcomeScreen() // Show welcome screen if no user is logged in.
-            : const MealsDailyOverviewScreen(), // Show meal overview if the user is logged in.
+        /// @TODO
+        /// AutoLogin
+        home: const WelcomeScreen(),
 
         /// Defines the named routes for navigation within the app.
         ///
