@@ -103,5 +103,15 @@ Once completed, the Flutter app will be installed and running on your iOS device
   pod install
   ```
 
+### 6. If PhoneNumberKit number error still persists
+- Follow this guide : https://stackoverflow.com/questions/78900034/cannot-find-type-phonenumberkit-and-extra-argument-phonenumberkit-in-call-er
+  ```bash
+  cd ios
+  rm Podfile.lock
+  vi Podfile # -> Add or EDit line pod 'PhoneNumberKit', '~> 3.7.6' (Could be > 4, depending on your device)
+  pod install
+  flutter run
+  ```
+
 Following these steps will help resolve issues related to missing dependencies, linking errors, and framework compatibility.
 
