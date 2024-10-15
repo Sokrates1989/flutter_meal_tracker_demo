@@ -6,7 +6,11 @@
 
 import 'package:engaige_meal_tracker_demo/models/user.dart';
 import 'package:engaige_meal_tracker_demo/storage/api_connector.dart';
+import 'package:engaige_meal_tracker_demo/storage/database_repo/user_database_repo.dart';
 import 'package:engaige_meal_tracker_demo/storage/database_wrapper.dart';
+import 'package:engaige_meal_tracker_demo/storage/data_handler_repo/data_handler_user_repo.dart';
+import 'package:engaige_meal_tracker_demo/storage/models/users_db_model.dart';
+import 'package:engaige_meal_tracker_demo/utils/os_utils.dart';
 
 /// A repository class that handles user-related data operations across both
 /// the API and local database.
@@ -20,11 +24,16 @@ class DataHandlerUserRepo {
   /// Database wrapper for handling local database operations.
   final DatabaseWrapper _databaseWrapper;
 
+  final UserDatabaseRepo _userDatabaseRepo;
+  final bool useLocalDb;
+
   /// Constructs an instance of `DataHandlerUserRepo`.
   ///
   /// Accepts an [ApiConnector] for handling API interactions and a [DatabaseWrapper]
   /// for managing local database operations.
-  DataHandlerUserRepo(this._apiConnector, this._databaseWrapper);
+  DataHandlerUserRepo(this._apiConnector, this._databaseWrapper)
+      : _userDatabaseRepo = UserDatabaseRepo(_databaseWrapper),
+        useLocalDb = OSUtils.isLocalDatabaseSupportedOnHostOS();
 
   /// Registers a new user using the API.
   ///
@@ -39,11 +48,24 @@ class DataHandlerUserRepo {
     required String userName,
     required String hashedPassword,
   }) async {
-    ApiReturn apiResponse = await _apiConnector.getUserRepo().registerUser(
-      userName: userName,
-      hashedPassword: hashedPassword,
-    );
-    return apiResponse;
+    if (useLocalDb) {
+      // Register user in local database.
+      final newUser = UsersDBModel(name: userName, hashedPassword: hashedPassword);
+      int userID = await _userDatabaseRepo.createUser(newUser);
+      return ApiReturn(
+        success: true,
+        returnCode: 200,
+        explanation: 'User registered locally.',
+        data: await _userDatabaseRepo.getUserByID(userID),
+      );
+    } else {
+      // Register user via API.
+      ApiReturn apiResponse = await _apiConnector.getUserRepo().registerUser(
+        userName: userName,
+        hashedPassword: hashedPassword,
+      );
+      return apiResponse;
+    }
   }
 
   /// Logs in a user using the API.
@@ -59,11 +81,32 @@ class DataHandlerUserRepo {
     required String userName,
     required String hashedPassword,
   }) async {
-    ApiReturn apiResponse = await _apiConnector.getUserRepo().login(
-      userName: userName,
-      hashedPassword: hashedPassword,
-    );
-    return apiResponse;
+    if (useLocalDb) {
+      User? user = await _userDatabaseRepo.login(
+        userName: userName,
+        hashedPassword: hashedPassword,
+      );
+      if (user != null) {
+        return ApiReturn(
+          success: true,
+          returnCode: 200,
+          explanation: 'User logged in locally.',
+          data: user,
+        );
+      } else {
+        return ApiReturn(
+          success: false,
+          returnCode: 401,
+          explanation: 'Invalid credentials for local database.',
+        );
+      }
+    } else {
+      ApiReturn apiResponse = await _apiConnector.getUserRepo().login(
+        userName: userName,
+        hashedPassword: hashedPassword,
+      );
+      return apiResponse;
+    }
   }
 
   /// Logs in a user and retrieves their user data if the login is successful.
@@ -79,14 +122,18 @@ class DataHandlerUserRepo {
     required String userName,
     required String hashedPassword,
   }) async {
-    ApiReturn apiResponse = await _apiConnector.getUserRepo().login(
-      userName: userName,
-      hashedPassword: hashedPassword,
-    );
-    if (!apiResponse.success) {
-      return null;
+    if (useLocalDb) {
+      return await _userDatabaseRepo.getUserByName(userName);
     } else {
-      return apiResponse.data as User;
+      ApiReturn apiResponse = await _apiConnector.getUserRepo().login(
+        userName: userName,
+        hashedPassword: hashedPassword,
+      );
+      if (!apiResponse.success) {
+        return null;
+      } else {
+        return apiResponse.data as User;
+      }
     }
   }
 
@@ -101,14 +148,17 @@ class DataHandlerUserRepo {
   ///
   /// Throws an exception if the login fails or the user data cannot be retrieved.
   Future<User> getUserWithID({required User user}) async {
-    ApiReturn loginReturn =
-    await _apiConnector.getUserRepo().loginUsingUser(user: user);
-    if (loginReturn.success) {
-      return loginReturn.data as User;
+    if (useLocalDb) {
+      return await _userDatabaseRepo.ensureUserID(user);
     } else {
-      throw Exception(
-        "Could not get ID of User ${loginReturn.returnCode}: ${loginReturn.explanation}",
-      );
+      ApiReturn loginReturn = await _apiConnector.getUserRepo().loginUsingUser(user: user);
+      if (loginReturn.success) {
+        return loginReturn.data as User;
+      } else {
+        throw Exception(
+          "Could not get ID of User ${loginReturn.returnCode}: ${loginReturn.explanation}",
+        );
+      }
     }
   }
 }
