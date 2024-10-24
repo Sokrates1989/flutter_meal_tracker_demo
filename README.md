@@ -15,8 +15,8 @@ The app showcases how to build a meal tracking system in Flutter, including feat
     - [Easy Localization](#easy-localization)
     - [Provider](#provider)
 4. [Setup Guide](#setup-guide)
-   - [Configuration](#configuration)
-   - [Installation](#installation)
+    - [Configuration](#configuration)
+    - [Installation](#installation)
         - [Build Web App](#build-the-web-app)
         - [Build Android Release](#build-android-release)
         - [Android Setup](docs/guides/README_Debug_Android_Flutter.md)
@@ -28,7 +28,12 @@ The app showcases how to build a meal tracking system in Flutter, including feat
 9. [Documentation](#documentation)
     - [Generating App Documentation](#generating-app-documentation)
     - [Excluding Sensitive Data from Documentation](#excluding-sensitive-data-from-documentation)
-10. [License](#license)
+10. [API Project and Documentation](#api)
+    - [API Project Repository](#api-repository)
+    - [API Documentation](#api-documentation)
+    - [API Endpoint](#api-endpoint)
+11. [License](#license)
+
 
 ## Features
 
@@ -307,6 +312,22 @@ Check the generated documentation (located in the `doc/api/` directory) to ensur
 
 For more detailed information on Dartdoc configurations, you can refer to the official [Dartdoc documentation](https://dart.dev/tools/dart-doc).
 
+## API
+
+### API Repository
+
+You can find the API repository at the following link:
+- [API Repository](https://github.com/Sokrates1989/docker_meal_tracker_demo_api_python)
+
+### API Documentation
+
+The API documentation is available here:
+- [API Documentation](https://api-python-doku.meal-tracker.fe-wi.com/)
+
+### API Endpoint
+
+The API used by this app can be accessed here:
+- [API Endpoint](https://meal-tracker-api-demo.engaige.felicitas-wisdom.com)
 
 
 ## License
